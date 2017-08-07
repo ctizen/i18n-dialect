@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/2gis/i18n-dialect#readme",
   "devDependencies": {
+    "i18n-po-json": "^1.0.4",
     "i18n-proto": "^1.0.4",
     "i18n-stex": "^1.0.7",
     "preact": "^8.2.1",

@@ -5,6 +5,7 @@ export {
   PluralContextualTranslation
 } from 'i18n-stex/src/types';
 import { Scalar } from 'i18n-stex/src/types';
+export { Meta, PoData } from 'i18n-po-json/src/types';
 
 export type SingleSimpleDescriptor = {
   type: '_t',
