@@ -8,12 +8,12 @@ import {
 import { I18NEntry } from 'i18n-proto';
 
 export class TranslationController {
-  protected dictMeta: Meta;
-  protected pluralSelect: (factor: number) => number;
-  protected dictionary: { [key: string]: string[] };
+  protected dictMeta: Meta | undefined;
+  protected pluralSelect: (factor: number) => number | undefined;
+  protected dictionary: { [key: string]: string[] } = {};
   // Additional hash map for strings that need macroprocessing.
   // Filled when translation is loaded but before it is applied.
-  protected stringsRequiringMacroProcessing: { [key: string]: boolean };
+  protected stringsRequiringMacroProcessing: { [key: string]: boolean } = {};
 
   constructor(
     protected translationGetter: (name: string) => Promise<string>,
