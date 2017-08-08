@@ -158,6 +158,21 @@ declare namespace Mocha {
 
 // ========================= promises =========================
 
+interface IteratorResult<T> {
+  done: boolean;
+  value?: T;
+}
+
+interface IterableShim<T> { }
+
+interface Iterator<T> {
+  next(value?: any): IteratorResult<T>;
+  return?(value?: any): IteratorResult<T>;
+  throw?(e?: any): IteratorResult<T>;
+}
+
+interface IterableIteratorShim<T> extends IterableShim<T>, Iterator<T> { }
+
 interface PromiseLike<T> {
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
