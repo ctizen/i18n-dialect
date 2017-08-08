@@ -43,19 +43,19 @@ glob@^7.1.1, glob@^7.1.2:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-i18n-po-json@^1.0.4:
+i18n-po-json@1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/i18n-po-json/-/i18n-po-json-1.0.4.tgz#3b1932ecfc14f18796c7c712a224295d8d120270"
   dependencies:
     cli "^1.0.1"
 
-i18n-proto@^1.0.4:
+i18n-proto@1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/i18n-proto/-/i18n-proto-1.0.4.tgz#fe9803542f2f5f1ccfb019da88f1bc14472eef42"
 
-i18n-stex@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/i18n-stex/-/i18n-stex-1.0.7.tgz#cf135c37f06e33c952adfdf16a50256b88677334"
+i18n-stex@1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/i18n-stex/-/i18n-stex-1.0.8.tgz#9bee3ef9fc8420435be9a03414af4330160613ee"
   dependencies:
     cli "^1.0.1"
     glob "^7.1.2"

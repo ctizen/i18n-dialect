@@ -1,7 +1,6 @@
 import {
   Descriptor,
   PluralDescriptor,
-  Macro,
   PoData,
   Meta
 } from './types';
@@ -11,15 +10,10 @@ export class TranslationController {
   protected dictMeta: Meta | undefined;
   protected pluralSelect: (factor: number) => number | undefined;
   protected dictionary: { [key: string]: string[] } = {};
-  // Additional hash map for strings that need macroprocessing.
-  // Filled when translation is loaded but before it is applied.
-  protected stringsRequiringMacroProcessing: { [key: string]: boolean } = {};
 
   constructor(
     protected translationGetter: (name: string) => Promise<string>,
-    protected sharedMacros: { [name: string]: Macro },
     protected onFailedSubstitution: (str: string, substitutions: (string | number)[]) => void | undefined,
-    protected onFailedMacro: (str: string) => void | undefined,
     protected defaultPluralSelect: (factor: number) => number,
     // TODO: что-то еще?
   ) { }
@@ -32,10 +26,6 @@ export class TranslationController {
 
     if (descriptor.substitutions.length > 0) {
       translation = this.substituteStrings(translation, descriptor);
-    }
-
-    if (this.stringsRequiringMacroProcessing[key]) {
-      translation = this.runMacros(translation, descriptor);
     }
 
     return translation;
@@ -51,13 +41,11 @@ export class TranslationController {
           }
 
           let dictionary = this.makeNewDict(poData.items);
-          let stringsRequiringMacroProcessing = this.detectMacroStrings(dictionary);
           let dictMeta = poData.meta;
           let pluralSelect = this.makePluralSelectFunction(poData.meta.pluralForms);
 
           // Everything seems to be OK, assign it all to object members
           this.dictionary = dictionary;
-          this.stringsRequiringMacroProcessing = stringsRequiringMacroProcessing;
           this.dictMeta = dictMeta;
           this.pluralSelect = pluralSelect;
 
@@ -153,20 +141,6 @@ export class TranslationController {
     return tmpStr;
   }
 
-  // Run macros and substitute their values to macro placeholders
-  protected runMacros(str: string, descriptor: Descriptor): string {
-    return str.replace(/%\{(\w+)(.*)\}/i, (foundSubstring, macroName: string, params: string) => {
-      // TODO: написать примеры, которые должны работать
-
-      // error handling
-      if (this.onFailedMacro) {
-        this.onFailedMacro(str);
-      }
-
-      return '';
-    });
-  }
-
   // Prepare internal dictionary.
   // This should be run once on translation load.
   protected makeNewDict(items: I18NEntry[]): { [key: string]: string[] } {
@@ -187,20 +161,6 @@ export class TranslationController {
       throw new Error("Couldn't parse Plural-Forms meta header");
     }
     return (new Function('n', 'return ' + matches[2])) as (factor: number) => number;
-  }
-
-  // Get list of all strings containing macro substitutions
-  // to speed up string getter in runtime. This should be run
-  // once on translation load.
-  protected detectMacroStrings(dict: { [key: string]: string[] }): { [key: string]: boolean } {
-    let macroStrings: { [key: string]: boolean } = {};
-    for (let str in dict) {
-      if (dict[str].join(' ').match(/%\{.*?\}/i)) {
-        macroStrings[str] = true;
-      }
-    }
-
-    return macroStrings;
   }
 };
 

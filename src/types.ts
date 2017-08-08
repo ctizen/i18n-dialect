@@ -11,8 +11,7 @@ export type SingleSimpleDescriptor = {
   type: '_t',
   msgid: string,
   msgstr: string,
-  substitutions: Scalar[],
-  macros: { [key: string]: Macro }
+  substitutions: Scalar[]
 };
 
 export type SingleContextualDescriptor = {
@@ -20,8 +19,7 @@ export type SingleContextualDescriptor = {
   msgid: string,
   msgstr: string,
   msgctxt: string,
-  substitutions: Scalar[],
-  macros: { [key: string]: Macro }
+  substitutions: Scalar[]
 };
 
 export type PluralSimpleDescriptor = {
@@ -30,8 +28,7 @@ export type PluralSimpleDescriptor = {
   msgid: string,
   msgidPlural: string,
   msgstr: string[],
-  substitutions: Scalar[],
-  macros: { [key: string]: Macro }
+  substitutions: Scalar[]
 };
 
 export type PluralContextualDescriptor = {
@@ -41,14 +38,9 @@ export type PluralContextualDescriptor = {
   msgidPlural: string,
   msgstr: string[],
   msgctxt: string,
-  substitutions: Scalar[],
-  macros: { [key: string]: Macro }
+  substitutions: Scalar[]
 };
 
 export type SingleDescriptor = SingleSimpleDescriptor | SingleContextualDescriptor;
 export type PluralDescriptor = PluralSimpleDescriptor | PluralContextualDescriptor;
 export type Descriptor = SingleDescriptor | PluralDescriptor;
-
-import { VNode } from 'preact'; // import something to just get typings...
-// TODO: сомнительно, завязываемся на конкретную реализацию. МБ дженериков навернуть?
-export type Macro = (name: string, params: any[]) => string | JSX.Element;
