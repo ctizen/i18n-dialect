@@ -21,14 +21,8 @@ export class TranslationController {
   public getString(descriptor: Descriptor): string {
     let key: string | undefined = this.getDictKeyForDescriptor(descriptor);
     let translationForms: string[] = key && this.dictionary[key] || this.getUntranslatedFallback(descriptor);
-
     let translation = this.selectPluralForm(translationForms, descriptor);
-
-    if (descriptor.substitutions.length > 0) {
-      translation = this.substituteStrings(translation, descriptor);
-    }
-
-    return translation;
+    return this.substituteStrings(translation, descriptor);
   }
 
   public setLocale(localeName: string): Promise<string> { // resolves with new locale name when loading is finished
@@ -125,12 +119,12 @@ export class TranslationController {
 
     // substitute optional parameters
     descriptor.substitutions.forEach((value, index) => {
-      tmpStr = tmpStr.replace('%' + (index + 1), value.toString());
+      tmpStr = tmpStr.replace(new RegExp('%' + (index + 1), 'ig'), value.toString());
     });
 
     // substitute plurality factor
     if (descriptor.type === '_nt' || descriptor.type === '_npt') {
-      tmpStr = tmpStr.replace('%%', descriptor.factor.toString());
+      tmpStr = tmpStr.replace(/%%/gi, descriptor.factor.toString());
     }
 
     // error handling
@@ -146,7 +140,7 @@ export class TranslationController {
   protected makeNewDict(items: I18NEntry[]): { [key: string]: string[] } {
     let dict: { [key: string]: string[] } = {};
     for (let item of items) {
-      dict[this.getDictKeyForEntry(item)] = typeof item.entry === 'string' ? [item.entry] : item.entry;
+      dict[this.getDictKeyForEntry(item)] = item.type === 'single' ? [item.translation] : item.translations;
     }
 
     return dict;

@@ -22,3 +22,29 @@ export class TranslationControllerTestable extends TranslationController {
   public pMakeNewDict = (items: I18NEntry[]) => this.makeNewDict(items);
   public pMakePluralSelectFunction = (selectStr: string) => this.makePluralSelectFunction(selectStr);
 }
+
+// helpers
+
+let failedSubstitutions = [];
+let translationGetter = (_name: string) => Promise.resolve('');
+
+export function getFailedSubstitutions() {
+  return failedSubstitutions;
+}
+
+export function clearFailedSubstitutions() {
+  failedSubstitutions = [];
+}
+
+export function setTranslationGetter(getter: (name: string) => Promise<string>) {
+  translationGetter = getter;
+}
+
+export function getController() {
+  return new TranslationControllerTestable(
+    translationGetter,
+    (str, substitutions) => failedSubstitutions.push({ str, substitutions }),
+    // russian default plural selector
+    (n) => n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2
+  );
+}
