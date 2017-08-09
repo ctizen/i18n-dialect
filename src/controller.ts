@@ -26,9 +26,9 @@ export class TranslationController {
 
   public setLocale(
     localeName: string,
-    onReady: (name: string) => void,
+    onReady: (name: string) => void, // called with new locale name when loading is finished
     onError?: (e: any) => void
-  ): void { // resolves with new locale name when loading is finished
+  ): void {
     this.translationGetter(localeName, (name: string, contents: string) => {
       let poData: PoData = JSON.parse(contents); // TODO: better json schema validation?
       if (!poData.items || !poData.meta) {
