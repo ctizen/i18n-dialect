@@ -26,7 +26,7 @@ export class TranslationControllerTestable extends TranslationController {
 // helpers
 
 let failedSubstitutions = [];
-let translationGetter = (_name: string) => Promise.resolve('');
+let translationGetter = (name: string, onReady: (name: string, contents: string) => void) => onReady(name, '');
 
 export function getFailedSubstitutions() {
   return failedSubstitutions;
@@ -36,7 +36,7 @@ export function clearFailedSubstitutions() {
   failedSubstitutions = [];
 }
 
-export function setTranslationGetter(getter: (name: string) => Promise<string>) {
+export function setTranslationGetter(getter: (name: string, onReady: (name: string, contents: string) => void) => void) {
   translationGetter = getter;
 }
 

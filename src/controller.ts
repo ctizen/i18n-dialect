@@ -12,10 +12,9 @@ export class TranslationController {
   protected dictionary: { [key: string]: string[] } = {};
 
   constructor(
-    protected translationGetter: (name: string) => Promise<string>,
+    protected translationGetter: (name: string, onReady: (name: string, contents: string) => void) => void,
     protected onFailedSubstitution: (str: string, substitutions: (string | number)[]) => void | undefined,
-    protected defaultPluralSelect: (factor: number) => number,
-    // TODO: что-то еще?
+    protected defaultPluralSelect: (factor: number) => number
   ) { }
 
   public getString(descriptor: Descriptor): string {
@@ -25,27 +24,30 @@ export class TranslationController {
     return this.substituteStrings(translation, descriptor);
   }
 
-  public setLocale(localeName: string): Promise<string> { // resolves with new locale name when loading is finished
-    return new Promise((resolve, reject) => {
-      this.translationGetter(localeName)
-        .then((value) => {
-          let poData: PoData = JSON.parse(value); // TODO: better json schema validation
-          if (!poData.items || !poData.meta) {
-            throw new Error('Invalid format of translation file');
-          }
+  public setLocale(
+    localeName: string,
+    onReady: (name: string) => void,
+    onError?: (e: any) => void
+  ): void { // resolves with new locale name when loading is finished
+    this.translationGetter(localeName, (name: string, contents: string) => {
+      let poData: PoData = JSON.parse(contents); // TODO: better json schema validation?
+      if (!poData.items || !poData.meta) {
+        onError && onError('Invalid format of translation file');
+        return;
+      }
 
-          let dictionary = this.makeNewDict(poData.items);
-          let dictMeta = poData.meta;
-          let pluralSelect = this.makePluralSelectFunction(poData.meta.pluralForms);
+      try {
+        let dictionary = this.makeNewDict(poData.items);
+        let dictMeta = poData.meta;
+        let pluralSelect = this.makePluralSelectFunction(poData.meta.pluralForms);
 
-          // Everything seems to be OK, assign it all to object members
-          this.dictionary = dictionary;
-          this.dictMeta = dictMeta;
-          this.pluralSelect = pluralSelect;
-
-          resolve(localeName);
-        })
-        .catch((e) => reject(e));
+        // Everything seems to be OK, assign it all to object members
+        this.dictionary = dictionary;
+        this.dictMeta = dictMeta;
+        this.pluralSelect = pluralSelect;
+      } catch (e) {
+        onError && onError(e);
+      }
     });
   }
 
@@ -146,7 +148,6 @@ export class TranslationController {
     return dict;
   }
 
-  // TODO: tests with all forms listed in https://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html#Plural-forms
   // Evaluate Plural-Forms meta header to make plural selection function.
   // This should be run once on translation load.
   protected makePluralSelectFunction(selectStr: string) {

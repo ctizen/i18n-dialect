@@ -413,26 +413,22 @@ describe('I18n end-user library', () => {
   });
 
   it('Integration: properly loads locale file by name (via setLocale)', () => {
-    setTranslationGetter((name: string) => {
-      return Promise.resolve(testLocaleJson);
-    });
-
+    setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
     let t = getController();
-    return t.setLocale('cs_cz').then((name: string) => {
+    return t.setLocale('cs_cz', (name: string) => {
       assert.equal(name, 'cs_cz'); // should match with name passed to setLocale
       assert.equal(t.mDictMeta().language, 'cs_CZ'); // should match with value in json
       assert.equal(Object.keys(t.mDictionary()).length, 4); // entries count in test file
       assert.notEqual(t.mPluralSelect(), undefined);
+    }, (err: any) => {
+      assert.empty(err);
     });
   });
 
   it('Integration: properly gets string from loaded dictionary with _t', () => {
-    setTranslationGetter((name: string) => {
-      return Promise.resolve(testLocaleJson);
-    });
-
+    setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
     let t = getController();
-    return t.setLocale('cs_cz').then((name: string) => {
+    return t.setLocale('cs_cz', (name: string) => {
       let descr: Descriptor = {
         type: '_t',
         msgid: '"%1" не подключает по вашему адресу.',
@@ -440,16 +436,15 @@ describe('I18n end-user library', () => {
         substitutions: ['Provider']
       };
       assert.equal(t.getString(descr), '"Provider" neumožňuje připojení na Vaší adrese.');
+    }, (err: any) => {
+      assert.empty(err);
     });
   });
 
   it('Integration: properly gets string from loaded dictionary with _pt', () => {
-    setTranslationGetter((name: string) => {
-      return Promise.resolve(testLocaleJson);
-    });
-
+    setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
     let t = getController();
-    return t.setLocale('cs_cz').then((name: string) => {
+    return t.setLocale('cs_cz', (name: string) => {
       let descr: Descriptor = {
         type: '_pt',
         msgid: '%1&nbsp;км',
@@ -458,16 +453,15 @@ describe('I18n end-user library', () => {
         substitutions: ['23']
       };
       assert.equal(t.getString(descr), '23&nbsp;km');
+    }, (err: any) => {
+      assert.empty(err);
     });
   });
 
   it('Integration: properly gets string from loaded dictionary with _nt', () => {
-    setTranslationGetter((name: string) => {
-      return Promise.resolve(testLocaleJson);
-    });
-
+    setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
     let t = getController();
-    return t.setLocale('cs_cz').then((name: string) => {
+    return t.setLocale('cs_cz', (name: string) => {
       let descr: Descriptor = {
         type: '_nt',
         factor: 0,
@@ -485,16 +479,15 @@ describe('I18n end-user library', () => {
 
       descr.factor = 8;
       assert.equal(t.getString(descr), '8 TV kanálů');
+    }, (err: any) => {
+      assert.empty(err);
     });
   });
 
   it('Integration: properly gets string from loaded dictionary with _npt', () => {
-    setTranslationGetter((name: string) => {
-      return Promise.resolve(testLocaleJson);
-    });
-
+    setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
     let t = getController();
-    return t.setLocale('cs_cz').then((name: string) => {
+    return t.setLocale('cs_cz', (name: string) => {
       let descr: Descriptor = {
         type: '_npt',
         factor: 0,
@@ -513,6 +506,8 @@ describe('I18n end-user library', () => {
 
       descr.factor = 8;
       assert.equal(t.getString(descr), '8 míst');
+    }, (err: any) => {
+      assert.empty(err);
     });
   });
 });

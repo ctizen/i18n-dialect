@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "karma start --browsers Firefox --single-run",
+    "build": "tsc index.ts --outDir dist",
     "testwatch": "karma start --browsers Firefox"
   },
   "repository": {
