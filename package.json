@@ -1,6 +1,6 @@
 {
   "name": "i18n-dialect",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Internationalization support library",
   "main": "dist/index.js",
   "scripts": {

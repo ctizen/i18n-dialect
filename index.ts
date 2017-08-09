@@ -7,7 +7,7 @@ import {
 import { TranslationController } from './src/controller';
 export { TranslationController } from './src/controller';
 
-export const _t: (ctrl: TranslationController) => SimpleTranslation =
+export const _tGen: (ctrl: TranslationController) => SimpleTranslation =
   (ctrl) => (str, substitutions = []): string => {
     return ctrl.getString({
       type: '_t',
@@ -17,7 +17,7 @@ export const _t: (ctrl: TranslationController) => SimpleTranslation =
     });
   };
 
-export const _pt: (ctrl: TranslationController) => ContextualTranslation =
+export const _ptGen: (ctrl: TranslationController) => ContextualTranslation =
   (ctrl) => (context, str, substitutions = []): string => {
     return ctrl.getString({
       type: '_pt',
@@ -28,7 +28,7 @@ export const _pt: (ctrl: TranslationController) => ContextualTranslation =
     });
   };
 
-export const _nt: (ctrl: TranslationController) => PluralTranslation =
+export const _ntGen: (ctrl: TranslationController) => PluralTranslation =
   (ctrl) => (plurals, factor, substitutions = []): string => {
     return ctrl.getString({
       type: '_nt',
@@ -40,7 +40,7 @@ export const _nt: (ctrl: TranslationController) => PluralTranslation =
     });
   };
 
-export const _npt: (ctrl: TranslationController) => PluralContextualTranslation =
+export const _nptGen: (ctrl: TranslationController) => PluralContextualTranslation =
   (ctrl) => (context, plurals, factor, substitutions = []): string => {
     return ctrl.getString({
       type: '_npt',
@@ -55,8 +55,8 @@ export const _npt: (ctrl: TranslationController) => PluralContextualTranslation 
 
 export class TranslationProvider {
   constructor(private ctrl: TranslationController) { }
-  public _t: SimpleTranslation = _t(this.ctrl);
-  public _pt: ContextualTranslation = _pt(this.ctrl);
-  public _nt: PluralTranslation = _nt(this.ctrl);
-  public _npt: PluralContextualTranslation = _npt(this.ctrl);
+  public _t: SimpleTranslation = _tGen(this.ctrl);
+  public _pt: ContextualTranslation = _ptGen(this.ctrl);
+  public _nt: PluralTranslation = _ntGen(this.ctrl);
+  public _npt: PluralContextualTranslation = _nptGen(this.ctrl);
 }
