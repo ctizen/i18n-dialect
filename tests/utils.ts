@@ -2,9 +2,7 @@ import { TranslationController } from '../src/controller';
 import { I18NEntry } from 'i18n-proto';
 import {
   Descriptor,
-  PluralDescriptor,
-  PoData,
-  Meta
+  PluralDescriptor
 } from '../src/types';
 
 export class TranslationControllerTestable extends TranslationController {

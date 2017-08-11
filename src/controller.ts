@@ -1,13 +1,11 @@
 import {
   Descriptor,
-  PluralDescriptor,
-  PoData,
-  Meta
+  PluralDescriptor
 } from './types';
-import { I18NEntry } from 'i18n-proto';
+import { I18NEntry, TranslationJson, TranslationMeta } from 'i18n-proto';
 
 export class TranslationController {
-  protected dictMeta: Meta | undefined;
+  protected dictMeta: TranslationMeta | undefined;
   protected pluralSelect: (factor: number) => number | undefined;
   protected dictionary: { [key: string]: string[] } = {};
 
@@ -30,7 +28,7 @@ export class TranslationController {
     onError?: (e: any) => void
   ): void {
     this.translationGetter(localeName, (name: string, contents: string) => {
-      let poData: PoData = JSON.parse(contents); // TODO: better json schema validation?
+      let poData: TranslationJson = JSON.parse(contents); // TODO: better json schema validation?
       if (!poData.items || !poData.meta) {
         onError && onError('Invalid format of translation file');
         return;

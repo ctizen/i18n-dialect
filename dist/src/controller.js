@@ -13,7 +13,8 @@ var TranslationController = (function () {
         var translation = this.selectPluralForm(translationForms, descriptor);
         return this.substituteStrings(translation, descriptor);
     };
-    TranslationController.prototype.setLocale = function (localeName, onReady, onError) {
+    TranslationController.prototype.setLocale = function (localeName, onReady, // called with new locale name when loading is finished
+        onError) {
         var _this = this;
         this.translationGetter(localeName, function (name, contents) {
             var poData = JSON.parse(contents); // TODO: better json schema validation?
