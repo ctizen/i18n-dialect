@@ -43,6 +43,7 @@ export class TranslationController {
         this.dictionary = dictionary;
         this.dictMeta = dictMeta;
         this.pluralSelect = pluralSelect;
+        onReady(localeName);
       } catch (e) {
         onError && onError(e);
       }

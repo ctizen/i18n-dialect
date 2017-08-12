@@ -30,6 +30,7 @@ var TranslationController = (function () {
                 _this.dictionary = dictionary;
                 _this.dictMeta = dictMeta;
                 _this.pluralSelect = pluralSelect;
+                onReady(localeName);
             }
             catch (e) {
                 onError && onError(e);
