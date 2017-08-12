@@ -109,7 +109,7 @@ export class TranslationController {
         let formIndex = this.pluralSelect
           ? this.pluralSelect(descriptor.factor)
           : this.defaultPluralSelect(descriptor.factor);
-        return forms[formIndex];
+        return forms[formIndex + 0]; // explicit cast to number; some gettext formulas may return just true/false - that's bad.
     }
   }
 
