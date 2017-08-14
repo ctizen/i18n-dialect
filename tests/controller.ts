@@ -115,17 +115,17 @@ describe('I18n end-user library', () => {
 
     // default selector is russian
     assert.equal(
-      t.pSelectPluralForm(['одна форма', 'две-четыре формы', 'пять и более форм'], descr),
+      t.pSelectPluralForm(['одна форма', 'две-четыре формы', 'пять и более форм'], descr, /*forceUntranslated = */ false),
       'две-четыре формы'
     );
     descr.factor = 1;
     assert.equal(
-      t.pSelectPluralForm(['одна форма', 'две-четыре формы', 'пять и более форм'], descr),
+      t.pSelectPluralForm(['одна форма', 'две-четыре формы', 'пять и более форм'], descr, /*forceUntranslated = */ false),
       'одна форма'
     );
     descr.factor = 6;
     assert.equal(
-      t.pSelectPluralForm(['одна форма', 'две-четыре формы', 'пять и более форм'], descr),
+      t.pSelectPluralForm(['одна форма', 'две-четыре формы', 'пять и более форм'], descr, /*forceUntranslated = */ false),
       'пять и более форм'
     );
   });
@@ -141,7 +141,7 @@ describe('I18n end-user library', () => {
 
     // default selector is russian
     assert.equal(
-      t.pSelectPluralForm(['одна форма'], descr),
+      t.pSelectPluralForm(['одна форма'], descr, /*forceUntranslated = */ false),
       'одна форма'
     );
   });

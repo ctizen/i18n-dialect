@@ -18,7 +18,7 @@ export class TranslationController {
   public getString(descriptor: Descriptor, forceUntranslated: boolean = false): string {
     let key: string | undefined = forceUntranslated ? undefined : this.getDictKeyForDescriptor(descriptor);
     let translationForms: string[] = key && this.dictionary[key] || this.getUntranslatedFallback(descriptor);
-    let translation = this.selectPluralForm(translationForms, descriptor);
+    let translation = this.selectPluralForm(translationForms, descriptor, forceUntranslated);
     return this.substituteStrings(translation, descriptor);
   }
 
@@ -97,7 +97,7 @@ export class TranslationController {
   }
 
   // Select proper plural form based on descriptor
-  protected selectPluralForm(forms: string[], descriptor: Descriptor): string {
+  protected selectPluralForm(forms: string[], descriptor: Descriptor, forceUntranslated: boolean): string {
     switch (descriptor.type) {
       case '_t':
       case '_pt':
@@ -107,7 +107,7 @@ export class TranslationController {
         if (!this.pluralSelect && !this.defaultPluralSelect) {
           throw new Error('Plural form selection formula not found, but plural form requested in sources');
         }
-        let formIndex = this.pluralSelect
+        let formIndex = this.pluralSelect && !forceUntranslated
           ? this.pluralSelect(descriptor.factor)
           : this.defaultPluralSelect(descriptor.factor);
         return forms[formIndex + 0]; // explicit cast to number; some gettext formulas may return just true/false - that's bad.

@@ -7,7 +7,7 @@
 `dialect` exports a controller class called `TranslationController`, which should be instantiated in your application. Controller's constructor has following configurational parameters:
 -  **translationGetter**: a used-defined function to receive translated content as JSON file. Library does not know about any ways your application can use to receive these files, for example, it might be a simple `require` when running on server side, or asynchronous file load with `fetch` or other asynchronous request library.
 - **onFailedSubstitution**: a callback, which will be called every time any `%N` substitution is failed; may be undefined.
-- **defaultPluralSelect**: a function that will be a default for plural forms selection. Usually, this should be a plural selector of developers' primary language.
+- **defaultPluralSelect**: a function that will be a default for plural forms selection. This should be a plural selector of developers' primary language.
 
 The `TranslationController` object also has a `setLocale` method to update internal dictionary - once this is done, the changes are applied to all subsequent calls of translation functions. Notice that `setLocale` method is asynchronous, so updating your user interface should not be done right after it's call: you should wait until everything is loaded and parsed.
 

@@ -15,7 +15,9 @@ export class TranslationControllerTestable extends TranslationController {
   public pGetDictKeyForDescriptor = (descriptor: Descriptor) => this.getDictKeyForDescriptor(descriptor);
   public pGetDictKeyForEntry = (item: I18NEntry) => this.getDictKeyForEntry(item);
   public pGetUntranslatedFallback = (descriptor: Descriptor) => this.getUntranslatedFallback(descriptor);
-  public pSelectPluralForm = (forms: string[], descriptor: Descriptor) => this.selectPluralForm(forms, descriptor);
+  public pSelectPluralForm = (
+    forms: string[], descriptor: Descriptor, forceUntranslated: boolean
+  ) => this.selectPluralForm(forms, descriptor, forceUntranslated);
   public pSubstituteStrings = (str: string, descriptor: Descriptor) => this.substituteStrings(str, descriptor);
   public pMakeNewDict = (items: I18NEntry[]) => this.makeNewDict(items);
   public pMakePluralSelectFunction = (selectStr: string) => this.makePluralSelectFunction(selectStr);
