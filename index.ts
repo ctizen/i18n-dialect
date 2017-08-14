@@ -34,7 +34,8 @@ export const _ntGen: (ctrl: TranslationController) => PluralTranslation =
       type: '_nt',
       factor,
       msgid: plurals[0],
-      msgidPlural: plurals[1],
+      msgidPlural: plurals[plurals.length - 1],
+      allPlurals: plurals,
       msgstr: [], // just for type conformity
       substitutions
     });
@@ -46,11 +47,60 @@ export const _nptGen: (ctrl: TranslationController) => PluralContextualTranslati
       type: '_npt',
       factor,
       msgid: plurals[0],
-      msgidPlural: plurals[1],
+      msgidPlural: plurals[plurals.length - 1],
+      allPlurals: plurals,
       msgstr: [], // just for type conformity
       msgctxt: context,
       substitutions
     });
+  };
+
+export const _ggGen: (ctrl: TranslationController) => SimpleTranslation =
+  (ctrl) => (str, substitutions = []): string => {
+    return ctrl.getString({
+      type: '_t',
+      msgid: str,
+      msgstr: '', // just for type conformity
+      substitutions
+    }, /* forceUntranslated = */ true);
+  };
+
+export const _pggGen: (ctrl: TranslationController) => ContextualTranslation =
+  (ctrl) => (context, str, substitutions = []): string => {
+    return ctrl.getString({
+      type: '_pt',
+      msgid: str,
+      msgstr: '', // just for type conformity
+      msgctxt: context,
+      substitutions
+    }, /* forceUntranslated = */ true);
+  };
+
+export const _nggGen: (ctrl: TranslationController) => PluralTranslation =
+  (ctrl) => (plurals, factor, substitutions = []): string => {
+    return ctrl.getString({
+      type: '_nt',
+      factor,
+      msgid: plurals[0],
+      msgidPlural: plurals[plurals.length - 1],
+      allPlurals: plurals,
+      msgstr: [], // just for type conformity
+      substitutions
+    }, /* forceUntranslated = */ true);
+  };
+
+export const _npggGen: (ctrl: TranslationController) => PluralContextualTranslation =
+  (ctrl) => (context, plurals, factor, substitutions = []): string => {
+    return ctrl.getString({
+      type: '_npt',
+      factor,
+      msgid: plurals[0],
+      msgidPlural: plurals[plurals.length - 1],
+      allPlurals: plurals,
+      msgstr: [], // just for type conformity
+      msgctxt: context,
+      substitutions
+    }, /* forceUntranslated = */ true);
   };
 
 export class TranslationProvider {
@@ -59,4 +109,8 @@ export class TranslationProvider {
   public _pt: ContextualTranslation = _ptGen(this.ctrl);
   public _nt: PluralTranslation = _ntGen(this.ctrl);
   public _npt: PluralContextualTranslation = _nptGen(this.ctrl);
+  public _gg: SimpleTranslation = _ggGen(this.ctrl);
+  public _pgg: ContextualTranslation = _pggGen(this.ctrl);
+  public _ngg: PluralTranslation = _nggGen(this.ctrl);
+  public _npgg: PluralContextualTranslation = _npggGen(this.ctrl);
 }

@@ -7,8 +7,9 @@ var TranslationController = (function () {
         this.defaultPluralSelect = defaultPluralSelect;
         this.dictionary = {};
     }
-    TranslationController.prototype.getString = function (descriptor) {
-        var key = this.getDictKeyForDescriptor(descriptor);
+    TranslationController.prototype.getString = function (descriptor, forceUntranslated) {
+        if (forceUntranslated === void 0) { forceUntranslated = false; }
+        var key = forceUntranslated ? undefined : this.getDictKeyForDescriptor(descriptor);
         var translationForms = key && this.dictionary[key] || this.getUntranslatedFallback(descriptor);
         var translation = this.selectPluralForm(translationForms, descriptor);
         return this.substituteStrings(translation, descriptor);
@@ -75,7 +76,7 @@ var TranslationController = (function () {
                 return [descriptor.msgid];
             case '_nt':
             case '_npt':
-                return [descriptor.msgid, descriptor.msgidPlural];
+                return descriptor.allPlurals;
         }
     };
     // Select proper plural form based on descriptor

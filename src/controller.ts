@@ -15,8 +15,8 @@ export class TranslationController {
     protected defaultPluralSelect: (factor: number) => number
   ) { }
 
-  public getString(descriptor: Descriptor): string {
-    let key: string | undefined = this.getDictKeyForDescriptor(descriptor);
+  public getString(descriptor: Descriptor, forceUntranslated: boolean = false): string {
+    let key: string | undefined = forceUntranslated ? undefined : this.getDictKeyForDescriptor(descriptor);
     let translationForms: string[] = key && this.dictionary[key] || this.getUntranslatedFallback(descriptor);
     let translation = this.selectPluralForm(translationForms, descriptor);
     return this.substituteStrings(translation, descriptor);
@@ -92,7 +92,7 @@ export class TranslationController {
         return [descriptor.msgid];
       case '_nt':
       case '_npt':
-        return [descriptor.msgid, descriptor.msgidPlural];
+        return descriptor.allPlurals;
     }
   }
 

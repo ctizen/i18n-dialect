@@ -1,6 +1,6 @@
 {
   "name": "i18n-dialect",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Internationalization support library",
   "main": "dist/index.js",
   "scripts": {
@@ -40,5 +40,8 @@
     "tslint-eslint-rules": "3.2.3",
     "typescript": "^2.4.2",
     "watchify": "^3.9.0"
+  },
+  "dependencies": {
+    "@types/assert": "^0.0.31"
   }
 }

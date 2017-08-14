@@ -26,6 +26,7 @@ export type PluralSimpleDescriptor = {
   factor: number,
   msgid: string,
   msgidPlural: string,
+  allPlurals: string[], // for untranslated fallbacks
   msgstr: string[],
   substitutions: Scalar[]
 };
@@ -35,6 +36,7 @@ export type PluralContextualDescriptor = {
   factor: number,
   msgid: string,
   msgidPlural: string,
+  allPlurals: string[], // for untranslated fallbacks
   msgstr: string[],
   msgctxt: string,
   substitutions: Scalar[]

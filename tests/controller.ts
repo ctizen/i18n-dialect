@@ -35,7 +35,7 @@ describe('I18n end-user library', () => {
     );
   });
 
-  it('Compatibility: getDictKeyForEntry and getDictKeyForDescriptor values are compatible for _nt', () => {
+  it('Compatibility: getDictKeyForEntry and getDictKeyForDescriptor values are compatible for _pt', () => {
     let t = getController();
     let entry: SingleI18NEntry = {
       type: 'single',
@@ -55,18 +55,19 @@ describe('I18n end-user library', () => {
     );
   });
 
-  it('Compatibility: getDictKeyForEntry and getDictKeyForDescriptor values are compatible for _pt', () => {
+  it('Compatibility: getDictKeyForEntry and getDictKeyForDescriptor values are compatible for _nt', () => {
     let t = getController();
     let entry: PluralI18NEntry = {
       type: 'plural',
-      entry: ['test1', 'test2'],
+      entry: ['test1', 'test3'],
       translations: []
     };
     let descr: Descriptor = {
       type: '_nt',
       factor: 2,
       msgid: 'test1',
-      msgidPlural: 'test2',
+      msgidPlural: 'test3',
+      allPlurals: ['test1', 'test2', 'test3'],
       msgstr: [],
       substitutions: []
     };
@@ -80,7 +81,7 @@ describe('I18n end-user library', () => {
     let t = getController();
     let entry: PluralI18NEntry = {
       type: 'plural',
-      entry: ['test1', 'test2'],
+      entry: ['test1', 'test3'],
       translations: [],
       context: 'ctx'
     };
@@ -88,7 +89,8 @@ describe('I18n end-user library', () => {
       type: '_npt',
       factor: 2,
       msgid: 'test1',
-      msgidPlural: 'test2',
+      msgidPlural: 'test3',
+      allPlurals: ['test1', 'test2', 'test3'],
       msgctxt: 'ctx',
       msgstr: [],
       substitutions: []
@@ -105,7 +107,8 @@ describe('I18n end-user library', () => {
       type: '_nt',
       factor: 2,
       msgid: 'test1', // ignored
-      msgidPlural: 'test2', // ignored
+      msgidPlural: 'test3', // ignored
+      allPlurals: ['test1', 'test2', 'test3'],
       msgstr: [],
       substitutions: []
     };
@@ -226,7 +229,8 @@ describe('I18n end-user library', () => {
       type: '_nt',
       factor: 2,
       msgid: 'test1', // ignored
-      msgidPlural: 'test2', // ignored
+      msgidPlural: 'test3', // ignored
+      allPlurals: ['test1', 'test2', 'test3'],
       msgstr: [],
       substitutions: []
     };
@@ -244,7 +248,8 @@ describe('I18n end-user library', () => {
       type: '_nt',
       factor: 2,
       msgid: 'test1', // ignored
-      msgidPlural: 'test2', // ignored
+      msgidPlural: 'test3', // ignored
+      allPlurals: ['test1', 'test2', 'test3'],
       msgstr: [],
       substitutions: []
     };
@@ -262,7 +267,8 @@ describe('I18n end-user library', () => {
       type: '_nt',
       factor: 2,
       msgid: 'test1', // ignored
-      msgidPlural: 'test2', // ignored
+      msgidPlural: 'test3', // ignored
+      allPlurals: ['test1', 'test2', 'test3'],
       msgstr: [],
       substitutions: [
         'param1',
@@ -422,7 +428,7 @@ describe('I18n end-user library', () => {
       assert.notEqual(t.mPluralSelect(), undefined);
       done();
     }, (err: any) => {
-      assert.empty(err);
+      assert.equal(err, undefined);
       done();
     });
   });
@@ -440,7 +446,7 @@ describe('I18n end-user library', () => {
       assert.equal(t.getString(descr), '"Provider" neumožňuje připojení na Vaší adrese.');
       done();
     }, (err: any) => {
-      assert.empty(err);
+      assert.equal(err, undefined);
       done();
     });
   });
@@ -459,7 +465,7 @@ describe('I18n end-user library', () => {
       assert.equal(t.getString(descr), '23&nbsp;km');
       done();
     }, (err: any) => {
-      assert.empty(err);
+      assert.equal(err, undefined);
       done();
     });
   });
@@ -473,6 +479,7 @@ describe('I18n end-user library', () => {
         factor: 0,
         msgid: '%% ТВ-канал',
         msgidPlural: '%% ТВ-каналов',
+        allPlurals: ['%% ТВ-канал', '%% ТВ-канала', '%% ТВ-каналов'],
         msgstr: [],
         substitutions: []
       };
@@ -488,7 +495,7 @@ describe('I18n end-user library', () => {
 
       done();
     }, (err: any) => {
-      assert.empty(err);
+      assert.equal(err, undefined);
       done();
     });
   });
@@ -502,6 +509,7 @@ describe('I18n end-user library', () => {
         factor: 0,
         msgid: '%% место',
         msgidPlural: '%% мест',
+        allPlurals: ['%% место', '%% места', '%% мест'],
         msgctxt: 'Вместимость парковки',
         msgstr: [],
         substitutions: []
@@ -518,7 +526,173 @@ describe('I18n end-user library', () => {
 
       done();
     }, (err: any) => {
-      assert.empty(err);
+      assert.equal(err, undefined);
+      done();
+    });
+  });
+
+  it('Integration: properly gets fallback string when no dictionary loaded with _t', () => {
+    let t = getController();
+    let descr: Descriptor = {
+      type: '_t',
+      msgid: '"%1" не подключает по вашему адресу.',
+      msgstr: '',
+      substitutions: ['Provider']
+    };
+    assert.equal(t.getString(descr), '"Provider" не подключает по вашему адресу.');
+  });
+
+  it('Integration: properly gets fallback string when no dictionary loaded with _pt', () => {
+    let t = getController();
+    let descr: Descriptor = {
+      type: '_pt',
+      msgid: '%1&nbsp;км',
+      msgctxt: 'километры',
+      msgstr: '',
+      substitutions: ['23']
+    };
+    assert.equal(t.getString(descr), '23&nbsp;км');
+  });
+
+  it('Integration: properly gets fallback string when no dictionary loaded with _nt', () => {
+    let t = getController();
+    let descr: Descriptor = {
+      type: '_nt',
+      factor: 0,
+      msgid: '%% ТВ-канал',
+      msgidPlural: '%% ТВ-каналов',
+      allPlurals: ['%% ТВ-канал', '%% ТВ-канала', '%% ТВ-каналов'],
+      msgstr: [],
+      substitutions: []
+    };
+
+    descr.factor = 1;
+    assert.equal(t.getString(descr), '1 ТВ-канал');
+
+    descr.factor = 3;
+    assert.equal(t.getString(descr), '3 ТВ-канала');
+
+    descr.factor = 8;
+    assert.equal(t.getString(descr), '8 ТВ-каналов');
+  });
+
+  it('Integration: properly gets fallback string when no dictionary loaded with _npt', () => {
+    let t = getController();
+    let descr: Descriptor = {
+      type: '_npt',
+      factor: 0,
+      msgid: '%% место',
+      msgidPlural: '%% мест',
+      allPlurals: ['%% место', '%% места', '%% мест'],
+      msgctxt: 'Вместимость парковки',
+      msgstr: [],
+      substitutions: []
+    };
+
+    descr.factor = 1;
+    assert.equal(t.getString(descr), '1 место');
+
+    descr.factor = 3;
+    assert.equal(t.getString(descr), '3 места');
+
+    descr.factor = 8;
+    assert.equal(t.getString(descr), '8 мест');
+  });
+
+  it('Integration: properly gets forced untranslated string from loaded dictionary with _t', (done) => {
+    setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
+    let t = getController();
+    t.setLocale('cs_cz', (name: string) => {
+      let descr: Descriptor = {
+        type: '_t',
+        msgid: '"%1" не подключает по вашему адресу.',
+        msgstr: '',
+        substitutions: ['Provider']
+      };
+      assert.equal(t.getString(descr, true), '"Provider" не подключает по вашему адресу.');
+      done();
+    }, (err: any) => {
+      assert.equal(err, undefined);
+      done();
+    });
+  });
+
+  it('Integration: properly gets forced untranslated string from loaded dictionary with _pt', (done) => {
+    setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
+    let t = getController();
+    t.setLocale('cs_cz', (name: string) => {
+      let descr: Descriptor = {
+        type: '_pt',
+        msgid: '%1&nbsp;км',
+        msgctxt: 'километры',
+        msgstr: '',
+        substitutions: ['23']
+      };
+      assert.equal(t.getString(descr, true), '23&nbsp;км');
+      done();
+    }, (err: any) => {
+      assert.equal(err, undefined);
+      done();
+    });
+  });
+
+  it('Integration: properly gets forced untranslated string from loaded dictionary with _nt', (done) => {
+    setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
+    let t = getController();
+    t.setLocale('cs_cz', (name: string) => {
+      let descr: Descriptor = {
+        type: '_nt',
+        factor: 0,
+        msgid: '%% ТВ-канал',
+        msgidPlural: '%% ТВ-каналов',
+        allPlurals: ['%% ТВ-канал', '%% ТВ-канала', '%% ТВ-каналов'],
+        msgstr: [],
+        substitutions: []
+      };
+
+      descr.factor = 1;
+      assert.equal(t.getString(descr, true), '1 ТВ-канал');
+
+      descr.factor = 3;
+      assert.equal(t.getString(descr, true), '3 ТВ-канала');
+
+      descr.factor = 8;
+      assert.equal(t.getString(descr, true), '8 ТВ-каналов');
+
+      done();
+    }, (err: any) => {
+      assert.equal(err, undefined);
+      done();
+    });
+  });
+
+  it('Integration: properly gets forced untranslated string from loaded dictionary with _npt', (done) => {
+    setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
+    let t = getController();
+    t.setLocale('cs_cz', (name: string) => {
+      let descr: Descriptor = {
+        type: '_npt',
+        factor: 0,
+        msgid: '%% место',
+        msgidPlural: '%% мест',
+        allPlurals: ['%% место', '%% места', '%% мест'],
+        msgctxt: 'Вместимость парковки',
+        msgstr: [],
+        substitutions: []
+      };
+
+      descr.factor = 1;
+      assert.equal(t.getString(descr, true), '1 место');
+
+      descr.factor = 3;
+      assert.equal(t.getString(descr, true), '3 места');
+
+      descr.factor = 8;
+      assert.equal(t.getString(descr, true), '8 мест');
+
+      done();
+    }, (err: any) => {
+      assert.equal(err, undefined);
       done();
     });
   });
