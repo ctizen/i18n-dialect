@@ -31,7 +31,7 @@ var TranslationController = (function () {
                 _this.dictionary = dictionary;
                 _this.dictMeta = dictMeta;
                 _this.pluralSelect = pluralSelect;
-                onReady(localeName);
+                onReady(name);
             }
             catch (e) {
                 onError && onError(e);
@@ -93,7 +93,7 @@ var TranslationController = (function () {
                 var formIndex = this.pluralSelect && !forceUntranslated
                     ? this.pluralSelect(descriptor.factor)
                     : this.defaultPluralSelect(descriptor.factor);
-                return forms[formIndex + 0]; // explicit cast to number; some gettext formulas may return just true/false - that's bad.
+                return forms[(formIndex || 0) + 0]; // explicit cast to number; some gettext formulas may return just true/false - that's bad.
         }
     };
     // Substitute parameters to %1, %2, etc and %% placeholders
@@ -101,7 +101,7 @@ var TranslationController = (function () {
         var tmpStr = str;
         // substitute optional parameters
         descriptor.substitutions.forEach(function (value, index) {
-            tmpStr = tmpStr.replace(new RegExp('%' + (index + 1), 'ig'), value.toString());
+            tmpStr = tmpStr.replace(new RegExp('%' + (index + 1), 'ig'), (value || '').toString());
         });
         // substitute plurality factor
         if (descriptor.type === '_nt' || descriptor.type === '_npt') {
@@ -119,7 +119,11 @@ var TranslationController = (function () {
         var dict = {};
         for (var _i = 0, items_1 = items; _i < items_1.length; _i++) {
             var item = items_1[_i];
-            dict[this.getDictKeyForEntry(item)] = item.type === 'single' ? [item.translation] : item.translations;
+            var key = this.getDictKeyForEntry(item);
+            if (!key) {
+                continue;
+            }
+            dict[key] = item.type === 'single' ? [item.translation || ''] : item.translations;
         }
         return dict;
     };

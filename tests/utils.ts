@@ -1,9 +1,6 @@
 import { TranslationController } from '../src/controller';
 import { I18NEntry } from 'i18n-proto';
-import {
-  Descriptor,
-  PluralDescriptor
-} from '../src/types';
+import { Descriptor } from '../src/types';
 
 export class TranslationControllerTestable extends TranslationController {
   // prefix 'm' for 'exposed member'
@@ -25,7 +22,7 @@ export class TranslationControllerTestable extends TranslationController {
 
 // helpers
 
-let failedSubstitutions = [];
+let failedSubstitutions: any[] = [];
 let translationGetter = (name: string, onReady: (name: string, contents: string) => void) => onReady(name, '');
 
 export function getFailedSubstitutions() {
@@ -43,7 +40,7 @@ export function setTranslationGetter(getter: (name: string, onReady: (name: stri
 export function getController() {
   return new TranslationControllerTestable(
     translationGetter,
-    (str, substitutions) => failedSubstitutions.push({ str, substitutions }),
+    (str, substitutions) => { failedSubstitutions.push({ str, substitutions }) },
     // russian default plural selector
     (n) => n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2
   );

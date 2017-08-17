@@ -2,7 +2,8 @@ export {
   SimpleTranslation,
   ContextualTranslation,
   PluralTranslation,
-  PluralContextualTranslation
+  PluralContextualTranslation,
+  Scalar
 } from 'i18n-stex/src/types';
 import { Scalar } from 'i18n-stex/src/types';
 
