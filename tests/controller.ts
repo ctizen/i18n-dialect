@@ -1,9 +1,9 @@
-import * as assert from 'assert';
+declare function require(name: string): any;
+const assert = require('assert');
 import { PluralI18NEntry, SingleI18NEntry } from 'i18n-proto';
 import { Descriptor } from '../src/types';
 import { I18NEntry } from 'i18n-proto';
 import {
-  TranslationControllerTestable,
   getController,
   getFailedSubstitutions,
   clearFailedSubstitutions,
@@ -335,7 +335,7 @@ describe('I18n end-user library', () => {
 
   it('Makes proper selection function from JSON file', () => {
     let t = getController();
-    let funcs = {
+    let funcs: any = {
       // key: plurality formula
       'nplurals=1; plural=0;': {
         0: 0, // key: plurality factor; value: expected # of plural form
@@ -403,13 +403,13 @@ describe('I18n end-user library', () => {
     let exceptions = [];
 
     try {
-      let plural = t.pMakePluralSelectFunction('nprals=1; plural=0;'); // typo
+      t.pMakePluralSelectFunction('nprals=1; plural=0;'); // typo
     } catch (e) {
       exceptions.push(e);
     }
 
     try {
-      let plural = t.pMakePluralSelectFunction('nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 :'); // invalid func syntax
+      t.pMakePluralSelectFunction('nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 :'); // invalid func syntax
     } catch (e) {
       exceptions.push(e);
     }
@@ -423,7 +423,7 @@ describe('I18n end-user library', () => {
     let t = getController();
     t.setLocale('cs_cz', (name: string) => {
       assert.equal(name, 'cs_cz'); // should match with name passed to setLocale
-      assert.equal(t.mDictMeta().language, 'cs_CZ'); // should match with value in json
+      assert.equal((t.mDictMeta() || { language: '' }).language, 'cs_CZ'); // should match with value in json
       assert.equal(Object.keys(t.mDictionary()).length, 4); // entries count in test file
       assert.notEqual(t.mPluralSelect(), undefined);
       done();
@@ -436,7 +436,7 @@ describe('I18n end-user library', () => {
   it('Integration: properly gets string from loaded dictionary with _t', (done) => {
     setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
     let t = getController();
-    t.setLocale('cs_cz', (name: string) => {
+    t.setLocale('cs_cz', (_name: string) => {
       let descr: Descriptor = {
         type: '_t',
         msgid: '"%1" не подключает по вашему адресу.',
@@ -454,7 +454,7 @@ describe('I18n end-user library', () => {
   it('Integration: properly gets string from loaded dictionary with _pt', (done) => {
     setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
     let t = getController();
-    t.setLocale('cs_cz', (name: string) => {
+    t.setLocale('cs_cz', (_name: string) => {
       let descr: Descriptor = {
         type: '_pt',
         msgid: '%1&nbsp;км',
@@ -473,7 +473,7 @@ describe('I18n end-user library', () => {
   it('Integration: properly gets string from loaded dictionary with _nt', (done) => {
     setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
     let t = getController();
-    t.setLocale('cs_cz', (name: string) => {
+    t.setLocale('cs_cz', (_name: string) => {
       let descr: Descriptor = {
         type: '_nt',
         factor: 0,
@@ -503,7 +503,7 @@ describe('I18n end-user library', () => {
   it('Integration: properly gets string from loaded dictionary with _npt', (done) => {
     setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
     let t = getController();
-    t.setLocale('cs_cz', (name: string) => {
+    t.setLocale('cs_cz', (_name: string) => {
       let descr: Descriptor = {
         type: '_npt',
         factor: 0,
@@ -602,7 +602,7 @@ describe('I18n end-user library', () => {
   it('Integration: properly gets forced untranslated string from loaded dictionary with _t', (done) => {
     setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
     let t = getController();
-    t.setLocale('cs_cz', (name: string) => {
+    t.setLocale('cs_cz', (_name: string) => {
       let descr: Descriptor = {
         type: '_t',
         msgid: '"%1" не подключает по вашему адресу.',
@@ -620,7 +620,7 @@ describe('I18n end-user library', () => {
   it('Integration: properly gets forced untranslated string from loaded dictionary with _pt', (done) => {
     setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
     let t = getController();
-    t.setLocale('cs_cz', (name: string) => {
+    t.setLocale('cs_cz', (_name: string) => {
       let descr: Descriptor = {
         type: '_pt',
         msgid: '%1&nbsp;км',
@@ -639,7 +639,7 @@ describe('I18n end-user library', () => {
   it('Integration: properly gets forced untranslated string from loaded dictionary with _nt', (done) => {
     setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
     let t = getController();
-    t.setLocale('cs_cz', (name: string) => {
+    t.setLocale('cs_cz', (_name: string) => {
       let descr: Descriptor = {
         type: '_nt',
         factor: 0,
@@ -669,7 +669,7 @@ describe('I18n end-user library', () => {
   it('Integration: properly gets forced untranslated string from loaded dictionary with _npt', (done) => {
     setTranslationGetter((name: string, onReady: (name: string, contents: string) => void) => onReady(name, testLocaleJson));
     let t = getController();
-    t.setLocale('cs_cz', (name: string) => {
+    t.setLocale('cs_cz', (_name: string) => {
       let descr: Descriptor = {
         type: '_npt',
         factor: 0,

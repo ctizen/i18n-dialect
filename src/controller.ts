@@ -1,7 +1,4 @@
-import {
-  Descriptor,
-  PluralDescriptor
-} from './types';
+import { Descriptor, Scalar } from './types';
 import { I18NEntry, TranslationJson, TranslationMeta } from 'i18n-proto';
 
 export class TranslationController {
@@ -11,7 +8,7 @@ export class TranslationController {
 
   constructor(
     protected translationGetter: (name: string, onReady: (name: string, contents: string) => void) => void,
-    protected onFailedSubstitution: (str: string, substitutions: (string | number)[]) => void | undefined,
+    protected onFailedSubstitution: (str: string, substitutions: Scalar[]) => void | undefined,
     protected defaultPluralSelect: (factor: number) => number
   ) { }
 
@@ -43,7 +40,7 @@ export class TranslationController {
         this.dictionary = dictionary;
         this.dictMeta = dictMeta;
         this.pluralSelect = pluralSelect;
-        onReady(localeName);
+        onReady(name);
       } catch (e) {
         onError && onError(e);
       }
@@ -110,7 +107,7 @@ export class TranslationController {
         let formIndex = this.pluralSelect && !forceUntranslated
           ? this.pluralSelect(descriptor.factor)
           : this.defaultPluralSelect(descriptor.factor);
-        return forms[formIndex + 0]; // explicit cast to number; some gettext formulas may return just true/false - that's bad.
+        return forms[(formIndex || 0) + 0]; // explicit cast to number; some gettext formulas may return just true/false - that's bad.
     }
   }
 
@@ -120,7 +117,7 @@ export class TranslationController {
 
     // substitute optional parameters
     descriptor.substitutions.forEach((value, index) => {
-      tmpStr = tmpStr.replace(new RegExp('%' + (index + 1), 'ig'), value.toString());
+      tmpStr = tmpStr.replace(new RegExp('%' + (index + 1), 'ig'), (value || '').toString());
     });
 
     // substitute plurality factor
@@ -141,7 +138,11 @@ export class TranslationController {
   protected makeNewDict(items: I18NEntry[]): { [key: string]: string[] } {
     let dict: { [key: string]: string[] } = {};
     for (let item of items) {
-      dict[this.getDictKeyForEntry(item)] = item.type === 'single' ? [item.translation] : item.translations;
+      let key = this.getDictKeyForEntry(item);
+      if (!key) {
+        continue;
+      }
+      dict[key] = item.type === 'single' ? [item.translation || ''] : item.translations;
     }
 
     return dict;
