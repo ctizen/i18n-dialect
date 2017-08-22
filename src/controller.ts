@@ -64,7 +64,7 @@ export class TranslationController {
   }
 
 
-  // Make key to fill disctionary with translations. 
+  // Make key to fill disctionary with translations.
   // This should be fully compatible with getDictKeyForDescriptor!
   protected getDictKeyForEntry(item: I18NEntry): string | undefined {
     switch (item.type) {
@@ -138,6 +138,13 @@ export class TranslationController {
   protected makeNewDict(items: I18NEntry[]): { [key: string]: string[] } {
     let dict: { [key: string]: string[] } = {};
     for (let item of items) {
+      // Don't add item in dict if no translation provided
+      if ((item.type === 'single' && !item.translation) ||
+        (item.type === 'plural' && !item.translations.every((i) => !!i))
+      ) {
+        continue;
+      }
+
       let key = this.getDictKeyForEntry(item);
       if (!key) {
         continue;

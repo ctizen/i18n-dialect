@@ -323,6 +323,15 @@ describe('I18n end-user library', () => {
       context: 'ctx2',
       entry: ['test4-1', 'test4-2'],
       translations: ['trans4-1', 'trans4-2', 'trans4-3'] // different forms count!
+    }, {
+      type: 'single', // no transaltion provided
+      entry: 'test2',
+      context: 'ctx3'
+    }, {
+      type: 'plural',
+      context: 'ctx4',
+      entry: ['test5-1', 'test5-2'],
+      translations: ['', '', 'trans5-3'] // not all translations provided
     }];
 
     assert.deepEqual(t.pMakeNewDict(items), {
