@@ -52,7 +52,7 @@ var TranslationController = (function () {
                 return 'ctx:' + descriptor.msgctxt + ';' + 'plural:' + descriptor.msgidPlural + ';' + descriptor.msgid;
         }
     };
-    // Make key to fill disctionary with translations. 
+    // Make key to fill disctionary with translations.
     // This should be fully compatible with getDictKeyForDescriptor!
     TranslationController.prototype.getDictKeyForEntry = function (item) {
         switch (item.type) {
@@ -119,6 +119,11 @@ var TranslationController = (function () {
         var dict = {};
         for (var _i = 0, items_1 = items; _i < items_1.length; _i++) {
             var item = items_1[_i];
+            // Don't add item in dict if no translation provided
+            if ((item.type === 'single' && !item.translation) ||
+                (item.type === 'plural' && !item.translations.every(function (i) { return !!i; }))) {
+                continue;
+            }
             var key = this.getDictKeyForEntry(item);
             if (!key) {
                 continue;
