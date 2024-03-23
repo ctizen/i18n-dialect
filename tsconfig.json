@@ -4,20 +4,18 @@
     "paths": {
       "tslib": ["./node_modules/tslib/tslib.d.ts"]
     },
-
-    "target": "es5",
-    "experimentalDecorators": true,
+    "target": "es2020",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
     "sourceMap": true,
     "noImplicitAny": true,
-    "jsx": "react",
     "strictNullChecks": true,
     "noEmitHelpers": true,
     "importHelpers": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
   },
   "exclude": [
     "node_modules"
-  ],
-  "compileOnSave": false
+  ]
 }

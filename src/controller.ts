@@ -8,14 +8,14 @@ export class TranslationController {
 
   constructor(
     protected translationGetter: (name: string, onReady: (name: string, contents: string) => void) => void,
-    protected onFailedSubstitution: (str: string, substitutions: Scalar[]) => void | undefined,
+    protected onFailedSubstitution: (str: string, substitutions: Scalar[]) => void,
     protected defaultPluralSelect: (factor: number) => number
   ) { }
 
-  public getString(descriptor: Descriptor, forceUntranslated: boolean = false): string {
-    let key: string | undefined = forceUntranslated ? undefined : this.getDictKeyForDescriptor(descriptor);
-    let translationForms: string[] = key && this.dictionary[key] || this.getUntranslatedFallback(descriptor);
-    let translation = this.selectPluralForm(translationForms, descriptor, forceUntranslated);
+  public getString(descriptor: Descriptor, forceUntranslated = false): string {
+    const key: string | undefined = forceUntranslated ? undefined : this.getDictKeyForDescriptor(descriptor);
+    const translationForms: string[] = this.dictionary[key ?? ''] ?? this.getUntranslatedFallback(descriptor);
+    const translation = this.selectPluralForm(translationForms, descriptor, forceUntranslated);
     return this.substituteStrings(translation, descriptor);
   }
 
@@ -25,16 +25,16 @@ export class TranslationController {
     onError?: (e: any) => void
   ): void {
     this.translationGetter(localeName, (name: string, contents: string) => {
-      let poData: TranslationJson = JSON.parse(contents); // TODO: better json schema validation?
+      const poData: TranslationJson = JSON.parse(contents); // TODO: better json schema validation?
       if (!poData.items || !poData.meta) {
-        onError && onError('Invalid format of translation file');
+        onError?.('Invalid format of translation file');
         return;
       }
 
       try {
-        let dictionary = this.makeNewDict(poData.items);
-        let dictMeta = poData.meta;
-        let pluralSelect = this.makePluralSelectFunction(poData.meta.pluralForms);
+        const dictionary = this.makeNewDict(poData.items);
+        const dictMeta = poData.meta;
+        const pluralSelect = this.makePluralSelectFunction(poData.meta.pluralForms);
 
         // Everything seems to be OK, assign it all to object members
         this.dictionary = dictionary;
@@ -42,7 +42,7 @@ export class TranslationController {
         this.pluralSelect = pluralSelect;
         onReady(name);
       } catch (e) {
-        onError && onError(e);
+        onError?.(e);
       }
     });
   }
@@ -104,10 +104,10 @@ export class TranslationController {
         if (!this.pluralSelect && !this.defaultPluralSelect) {
           throw new Error('Plural form selection formula not found, but plural form requested in sources');
         }
-        let formIndex = this.pluralSelect && !forceUntranslated
+        const formIndex = this.pluralSelect !== undefined && !forceUntranslated
           ? this.pluralSelect(descriptor.factor)
           : this.defaultPluralSelect(descriptor.factor);
-        return forms[(formIndex || 0) + 0]; // explicit cast to number; some gettext formulas may return just true/false - that's bad.
+        return forms[parseInt(formIndex?.toString() ?? '', 10) ?? 0]; // explicit cast to number; some gettext formulas may return just true/false - that's bad.
     }
   }
 
@@ -117,7 +117,7 @@ export class TranslationController {
 
     // substitute optional parameters
     descriptor.substitutions.forEach((value, index) => {
-      tmpStr = tmpStr.replace(new RegExp('%' + (index + 1), 'ig'), (value || '').toString());
+      tmpStr = tmpStr.replace(new RegExp('%' + (index + 1), 'ig'), (value ?? '').toString());
     });
 
     // substitute plurality factor
@@ -136,8 +136,8 @@ export class TranslationController {
   // Prepare internal dictionary.
   // This should be run once on translation load.
   protected makeNewDict(items: I18NEntry[]): { [key: string]: string[] } {
-    let dict: { [key: string]: string[] } = {};
-    for (let item of items) {
+    const dict: { [key: string]: string[] } = {};
+    for (const item of items) {
       // Don't add item in dict if no translation provided
       if ((item.type === 'single' && !item.translation) ||
         (item.type === 'plural' && !item.translations.every((i) => !!i))
@@ -145,11 +145,11 @@ export class TranslationController {
         continue;
       }
 
-      let key = this.getDictKeyForEntry(item);
+      const key = this.getDictKeyForEntry(item);
       if (!key) {
         continue;
       }
-      dict[key] = item.type === 'single' ? [item.translation || ''] : item.translations;
+      dict[key] = item.type === 'single' ? [item.translation ?? ''] : item.translations;
     }
 
     return dict;
@@ -158,11 +158,11 @@ export class TranslationController {
   // Evaluate Plural-Forms meta header to make plural selection function.
   // This should be run once on translation load.
   protected makePluralSelectFunction(selectStr: string) {
-    let matches = selectStr.match(/nplurals=(\d+);\s*plural=(.*)/i);
+    const matches = selectStr.match(/nplurals=(\d+);\s*plural=(.*)/i);
     if (!matches) {
       throw new Error("Couldn't parse Plural-Forms meta header");
     }
-    return (new Function('n', 'return ' + matches[2])) as (factor: number) => number;
+    return (new Function('n', 'return Number(' + matches[2].replace(/;$/, '') + ');')) as (factor: number) => number;
   }
-};
+}
 

@@ -8,7 +8,7 @@ import { TranslationController } from './src/controller';
 export { TranslationController } from './src/controller';
 
 export const _tGen: (ctrl: TranslationController) => SimpleTranslation =
-  (ctrl) => (str, substitutions = []): string => {
+  (ctrl) => (str: string, substitutions = []): string => {
     return ctrl.getString({
       type: '_t',
       msgid: str,
@@ -18,7 +18,7 @@ export const _tGen: (ctrl: TranslationController) => SimpleTranslation =
   };
 
 export const _ptGen: (ctrl: TranslationController) => ContextualTranslation =
-  (ctrl) => (context, str, substitutions = []): string => {
+  (ctrl) => (context: string, str: string, substitutions = []): string => {
     return ctrl.getString({
       type: '_pt',
       msgid: str,
@@ -29,7 +29,7 @@ export const _ptGen: (ctrl: TranslationController) => ContextualTranslation =
   };
 
 export const _ntGen: (ctrl: TranslationController) => PluralTranslation =
-  (ctrl) => (plurals, factor, substitutions = []): string => {
+  (ctrl) => (plurals: string[], factor: number, substitutions = []): string => {
     return ctrl.getString({
       type: '_nt',
       factor,
@@ -42,7 +42,7 @@ export const _ntGen: (ctrl: TranslationController) => PluralTranslation =
   };
 
 export const _nptGen: (ctrl: TranslationController) => PluralContextualTranslation =
-  (ctrl) => (context, plurals, factor, substitutions = []): string => {
+  (ctrl) => (context: string, plurals: string[], factor: number, substitutions = []): string => {
     return ctrl.getString({
       type: '_npt',
       factor,
@@ -56,7 +56,7 @@ export const _nptGen: (ctrl: TranslationController) => PluralContextualTranslati
   };
 
 export const _ggGen: (ctrl: TranslationController) => SimpleTranslation =
-  (ctrl) => (str, substitutions = []): string => {
+  (ctrl) => (str: string, substitutions = []): string => {
     return ctrl.getString({
       type: '_t',
       msgid: str,
@@ -66,7 +66,7 @@ export const _ggGen: (ctrl: TranslationController) => SimpleTranslation =
   };
 
 export const _pggGen: (ctrl: TranslationController) => ContextualTranslation =
-  (ctrl) => (context, str, substitutions = []): string => {
+  (ctrl) => (context: string, str: string, substitutions = []): string => {
     return ctrl.getString({
       type: '_pt',
       msgid: str,
@@ -77,7 +77,7 @@ export const _pggGen: (ctrl: TranslationController) => ContextualTranslation =
   };
 
 export const _nggGen: (ctrl: TranslationController) => PluralTranslation =
-  (ctrl) => (plurals, factor, substitutions = []): string => {
+  (ctrl) => (plurals: string[], factor: number, substitutions = []): string => {
     return ctrl.getString({
       type: '_nt',
       factor,
@@ -90,7 +90,7 @@ export const _nggGen: (ctrl: TranslationController) => PluralTranslation =
   };
 
 export const _npggGen: (ctrl: TranslationController) => PluralContextualTranslation =
-  (ctrl) => (context, plurals, factor, substitutions = []): string => {
+  (ctrl) => (context: string, plurals: string[], factor: number, substitutions = []): string => {
     return ctrl.getString({
       type: '_npt',
       factor,
@@ -104,7 +104,7 @@ export const _npggGen: (ctrl: TranslationController) => PluralContextualTranslat
   };
 
 export class TranslationProvider {
-  constructor(private ctrl: TranslationController) { }
+  constructor(private readonly ctrl: TranslationController) { }
   public _t: SimpleTranslation = _tGen(this.ctrl);
   public _pt: ContextualTranslation = _ptGen(this.ctrl);
   public _nt: PluralTranslation = _ntGen(this.ctrl);
