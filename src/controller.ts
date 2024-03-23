@@ -115,6 +115,14 @@ export class TranslationController {
   protected substituteStrings(str: string, descriptor: Descriptor): string {
     let tmpStr = str;
 
+    // Fallback, if everything went wrong
+    if (!tmpStr.length) {
+      if (this.onFailedSubstitution) {
+        this.onFailedSubstitution('', descriptor.substitutions);
+      }
+      return descriptor.msgid;
+    }
+
     // substitute optional parameters
     descriptor.substitutions.forEach((value, index) => {
       tmpStr = tmpStr.replace(new RegExp('%' + (index + 1), 'ig'), (value ?? '').toString());

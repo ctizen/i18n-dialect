@@ -703,5 +703,22 @@ describe('I18n end-user library', () => {
       done();
     });
   });
+
+  it('substituteStrings throws error if there is no plural form for current factor in current locale', () => {
+    const t = getController();
+    const str = '';
+    const descr: Descriptor = {
+      type: '_nt',
+      factor: 2,
+      msgid: 'test1', // ignored
+      msgidPlural: 'test3', // ignored
+      allPlurals: ['test1', 'test2'],
+      msgstr: [],
+      substitutions: ['param1', 'param2'],
+    };
+
+    assert.strictEqual(t.pSubstituteStrings(str, descr), 'test1');
+    assert.strictEqual(getFailedSubstitutions().length, 1);
+  });
 });
 
