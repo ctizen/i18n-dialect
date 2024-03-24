@@ -1,16 +1,15 @@
 {
   "name": "i18n-dialect",
-  "version": "1.0.8",
+  "version": "2.0.0",
   "description": "Internationalization support library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "type": "module",
   "scripts": {
     "lint": "eslint . --ext .js,.ts,.tsx",
     "test": "jest",
     "typecheck": "tsc -p . --noEmit",
-    "build": "tsc -p . --outDir dist",
-    "prepare": "yarn build"
+    "build": "rm -rf dist && tsc -p . --outDir dist",
+    "prepare": "yon build"
   },
   "repository": {
     "type": "git",
@@ -34,7 +33,6 @@
     "@types/assert": "^1.5.10",
     "@types/cli": "^0.11.25",
     "@types/get-stdin": "^7.0.0",
-    "@types/glob": "^8.1.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.30",
     "@typescript-eslint/eslint-plugin": "6.21.0",
@@ -52,6 +50,7 @@
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "tslib": "2.6.2",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "yarn-or-npm": "^3.0.1"
   }
 }

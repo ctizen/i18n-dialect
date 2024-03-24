@@ -107,7 +107,7 @@ export class TranslationController {
         const formIndex = this.pluralSelect !== undefined && !forceUntranslated
           ? this.pluralSelect(descriptor.factor)
           : this.defaultPluralSelect(descriptor.factor);
-        return forms[parseInt(formIndex?.toString() ?? '', 10) ?? 0]; // explicit cast to number; some gettext formulas may return just true/false - that's bad.
+        return forms[parseInt(formIndex?.toString() ?? '', 10) || 0]; // explicit cast to number; some gettext formulas may return just true/false - that's bad.
     }
   }
 
@@ -116,7 +116,7 @@ export class TranslationController {
     let tmpStr = str;
 
     // Fallback, if everything went wrong
-    if (!tmpStr.length) {
+    if (!tmpStr || !tmpStr.length) {
       if (this.onFailedSubstitution) {
         this.onFailedSubstitution('', descriptor.substitutions);
       }
