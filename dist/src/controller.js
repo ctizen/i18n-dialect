@@ -1,42 +1,48 @@
-export class TranslationController {
-    constructor(translationGetter, onFailedSubstitution, defaultPluralSelect) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TranslationController = void 0;
+var TranslationController = /** @class */ (function () {
+    function TranslationController(translationGetter, onFailedSubstitution, defaultPluralSelect) {
         this.translationGetter = translationGetter;
         this.onFailedSubstitution = onFailedSubstitution;
         this.defaultPluralSelect = defaultPluralSelect;
         this.dictionary = {};
     }
-    getString(descriptor, forceUntranslated = false) {
-        const key = forceUntranslated ? undefined : this.getDictKeyForDescriptor(descriptor);
-        const translationForms = this.dictionary[key ?? ''] ?? this.getUntranslatedFallback(descriptor);
-        const translation = this.selectPluralForm(translationForms, descriptor, forceUntranslated);
+    TranslationController.prototype.getString = function (descriptor, forceUntranslated) {
+        var _a;
+        if (forceUntranslated === void 0) { forceUntranslated = false; }
+        var key = forceUntranslated ? undefined : this.getDictKeyForDescriptor(descriptor);
+        var translationForms = (_a = this.dictionary[key !== null && key !== void 0 ? key : '']) !== null && _a !== void 0 ? _a : this.getUntranslatedFallback(descriptor);
+        var translation = this.selectPluralForm(translationForms, descriptor, forceUntranslated);
         return this.substituteStrings(translation, descriptor);
-    }
-    setLocale(localeName, onReady, // called with new locale name when loading is finished
+    };
+    TranslationController.prototype.setLocale = function (localeName, onReady, // called with new locale name when loading is finished
     onError) {
-        this.translationGetter(localeName, (name, contents) => {
-            const poData = JSON.parse(contents); // TODO: better json schema validation?
+        var _this = this;
+        this.translationGetter(localeName, function (name, contents) {
+            var poData = JSON.parse(contents); // TODO: better json schema validation?
             if (!poData.items || !poData.meta) {
-                onError?.('Invalid format of translation file');
+                onError === null || onError === void 0 ? void 0 : onError('Invalid format of translation file');
                 return;
             }
             try {
-                const dictionary = this.makeNewDict(poData.items);
-                const dictMeta = poData.meta;
-                const pluralSelect = this.makePluralSelectFunction(poData.meta.pluralForms);
+                var dictionary = _this.makeNewDict(poData.items);
+                var dictMeta = poData.meta;
+                var pluralSelect = _this.makePluralSelectFunction(poData.meta.pluralForms);
                 // Everything seems to be OK, assign it all to object members
-                this.dictionary = dictionary;
-                this.dictMeta = dictMeta;
-                this.pluralSelect = pluralSelect;
+                _this.dictionary = dictionary;
+                _this.dictMeta = dictMeta;
+                _this.pluralSelect = pluralSelect;
                 onReady(name);
             }
             catch (e) {
-                onError?.(e);
+                onError === null || onError === void 0 ? void 0 : onError(e);
             }
         });
-    }
+    };
     // ----------------------------------------------------------------------------------
     // Make key to receive translation from dictionary.
-    getDictKeyForDescriptor(descriptor) {
+    TranslationController.prototype.getDictKeyForDescriptor = function (descriptor) {
         switch (descriptor.type) {
             case '_t':
                 return descriptor.msgid;
@@ -47,10 +53,10 @@ export class TranslationController {
             case '_npt':
                 return 'ctx:' + descriptor.msgctxt + ';' + 'plural:' + descriptor.msgidPlural + ';' + descriptor.msgid;
         }
-    }
+    };
     // Make key to fill disctionary with translations.
     // This should be fully compatible with getDictKeyForDescriptor!
-    getDictKeyForEntry(item) {
+    TranslationController.prototype.getDictKeyForEntry = function (item) {
         switch (item.type) {
             case 'single':
                 if (item.context) {
@@ -63,9 +69,9 @@ export class TranslationController {
                 }
                 return 'plural:' + item.entry[1] + ';' + item.entry[0];
         }
-    }
+    };
     // Get msgid/msgid_plural as fallback in case of untranslated string
-    getUntranslatedFallback(descriptor) {
+    TranslationController.prototype.getUntranslatedFallback = function (descriptor) {
         switch (descriptor.type) {
             case '_t':
             case '_pt':
@@ -74,9 +80,10 @@ export class TranslationController {
             case '_npt':
                 return descriptor.allPlurals;
         }
-    }
+    };
     // Select proper plural form based on descriptor
-    selectPluralForm(forms, descriptor, forceUntranslated) {
+    TranslationController.prototype.selectPluralForm = function (forms, descriptor, forceUntranslated) {
+        var _a;
         switch (descriptor.type) {
             case '_t':
             case '_pt':
@@ -86,15 +93,15 @@ export class TranslationController {
                 if (!this.pluralSelect && !this.defaultPluralSelect) {
                     throw new Error('Plural form selection formula not found, but plural form requested in sources');
                 }
-                const formIndex = this.pluralSelect !== undefined && !forceUntranslated
+                var formIndex = this.pluralSelect !== undefined && !forceUntranslated
                     ? this.pluralSelect(descriptor.factor)
                     : this.defaultPluralSelect(descriptor.factor);
-                return forms[parseInt(formIndex?.toString() ?? '', 10) || 0]; // explicit cast to number; some gettext formulas may return just true/false - that's bad.
+                return forms[parseInt((_a = formIndex === null || formIndex === void 0 ? void 0 : formIndex.toString()) !== null && _a !== void 0 ? _a : '', 10) || 0]; // explicit cast to number; some gettext formulas may return just true/false - that's bad.
         }
-    }
+    };
     // Substitute parameters to %1, %2, etc and %% placeholders
-    substituteStrings(str, descriptor) {
-        let tmpStr = str;
+    TranslationController.prototype.substituteStrings = function (str, descriptor) {
+        var tmpStr = str;
         // Fallback, if everything went wrong
         if (!tmpStr || !tmpStr.length) {
             if (this.onFailedSubstitution) {
@@ -103,8 +110,8 @@ export class TranslationController {
             return descriptor.msgid;
         }
         // substitute optional parameters
-        descriptor.substitutions.forEach((value, index) => {
-            tmpStr = tmpStr.replace(new RegExp('%' + (index + 1), 'ig'), (value ?? '').toString());
+        descriptor.substitutions.forEach(function (value, index) {
+            tmpStr = tmpStr.replace(new RegExp('%' + (index + 1), 'ig'), (value !== null && value !== void 0 ? value : '').toString());
         });
         // substitute plurality factor
         if (descriptor.type === '_nt' || descriptor.type === '_npt') {
@@ -115,33 +122,37 @@ export class TranslationController {
             this.onFailedSubstitution(str, descriptor.substitutions);
         }
         return tmpStr;
-    }
+    };
     // Prepare internal dictionary.
     // This should be run once on translation load.
-    makeNewDict(items) {
-        const dict = {};
-        for (const item of items) {
+    TranslationController.prototype.makeNewDict = function (items) {
+        var _a;
+        var dict = {};
+        for (var _i = 0, items_1 = items; _i < items_1.length; _i++) {
+            var item = items_1[_i];
             // Don't add item in dict if no translation provided
             if ((item.type === 'single' && !item.translation) ||
-                (item.type === 'plural' && !item.translations.every((i) => !!i))) {
+                (item.type === 'plural' && !item.translations.every(function (i) { return !!i; }))) {
                 continue;
             }
-            const key = this.getDictKeyForEntry(item);
+            var key = this.getDictKeyForEntry(item);
             if (!key) {
                 continue;
             }
-            dict[key] = item.type === 'single' ? [item.translation ?? ''] : item.translations;
+            dict[key] = item.type === 'single' ? [(_a = item.translation) !== null && _a !== void 0 ? _a : ''] : item.translations;
         }
         return dict;
-    }
+    };
     // Evaluate Plural-Forms meta header to make plural selection function.
     // This should be run once on translation load.
-    makePluralSelectFunction(selectStr) {
-        const matches = selectStr.match(/nplurals=(\d+);\s*plural=(.*)/i);
+    TranslationController.prototype.makePluralSelectFunction = function (selectStr) {
+        var matches = selectStr.match(/nplurals=(\d+);\s*plural=(.*)/i);
         if (!matches) {
             throw new Error("Couldn't parse Plural-Forms meta header");
         }
         return (new Function('n', 'return Number(' + matches[2].replace(/;$/, '') + ');'));
-    }
-}
+    };
+    return TranslationController;
+}());
+exports.TranslationController = TranslationController;
 //# sourceMappingURL=controller.js.map

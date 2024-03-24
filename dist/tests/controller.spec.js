@@ -1,48 +1,51 @@
-import assert from 'assert';
-import { getController, getFailedSubstitutions, clearFailedSubstitutions, setTranslationGetter } from './utils';
-import { testLocaleJson } from './fixture';
-describe('I18n end-user library', () => {
-    beforeEach(() => clearFailedSubstitutions());
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = require("tslib");
+var assert_1 = tslib_1.__importDefault(require("assert"));
+var utils_1 = require("./utils");
+var fixture_1 = require("./fixture");
+describe('I18n end-user library', function () {
+    beforeEach(function () { return (0, utils_1.clearFailedSubstitutions)(); });
     // Note: these compatibility tests are very important to guarantee
     // that dictionary keys are formed in same way for i18n entries and descriptors.
-    it('Compatibility: getDictKeyForEntry and getDictKeyForDescriptor values are compatible for _t', () => {
-        const t = getController();
-        const entry = {
+    it('Compatibility: getDictKeyForEntry and getDictKeyForDescriptor values are compatible for _t', function () {
+        var t = (0, utils_1.getController)();
+        var entry = {
             type: 'single',
             entry: 'test'
         };
-        const descr = {
+        var descr = {
             type: '_t',
             msgid: 'test',
             msgstr: '',
             substitutions: []
         };
-        assert.strictEqual(t.pGetDictKeyForDescriptor(descr), t.pGetDictKeyForEntry(entry));
+        assert_1.default.strictEqual(t.pGetDictKeyForDescriptor(descr), t.pGetDictKeyForEntry(entry));
     });
-    it('Compatibility: getDictKeyForEntry and getDictKeyForDescriptor values are compatible for _pt', () => {
-        const t = getController();
-        const entry = {
+    it('Compatibility: getDictKeyForEntry and getDictKeyForDescriptor values are compatible for _pt', function () {
+        var t = (0, utils_1.getController)();
+        var entry = {
             type: 'single',
             entry: 'test',
             context: 'ctx'
         };
-        const descr = {
+        var descr = {
             type: '_pt',
             msgid: 'test',
             msgstr: '',
             msgctxt: 'ctx',
             substitutions: []
         };
-        assert.strictEqual(t.pGetDictKeyForDescriptor(descr), t.pGetDictKeyForEntry(entry));
+        assert_1.default.strictEqual(t.pGetDictKeyForDescriptor(descr), t.pGetDictKeyForEntry(entry));
     });
-    it('Compatibility: getDictKeyForEntry and getDictKeyForDescriptor values are compatible for _nt', () => {
-        const t = getController();
-        const entry = {
+    it('Compatibility: getDictKeyForEntry and getDictKeyForDescriptor values are compatible for _nt', function () {
+        var t = (0, utils_1.getController)();
+        var entry = {
             type: 'plural',
             entry: ['test1', 'test3'],
             translations: []
         };
-        const descr = {
+        var descr = {
             type: '_nt',
             factor: 2,
             msgid: 'test1',
@@ -51,17 +54,17 @@ describe('I18n end-user library', () => {
             msgstr: [],
             substitutions: []
         };
-        assert.strictEqual(t.pGetDictKeyForDescriptor(descr), t.pGetDictKeyForEntry(entry));
+        assert_1.default.strictEqual(t.pGetDictKeyForDescriptor(descr), t.pGetDictKeyForEntry(entry));
     });
-    it('Compatibility: getDictKeyForEntry and getDictKeyForDescriptor values are compatible for _npt', () => {
-        const t = getController();
-        const entry = {
+    it('Compatibility: getDictKeyForEntry and getDictKeyForDescriptor values are compatible for _npt', function () {
+        var t = (0, utils_1.getController)();
+        var entry = {
             type: 'plural',
             entry: ['test1', 'test3'],
             translations: [],
             context: 'ctx'
         };
-        const descr = {
+        var descr = {
             type: '_npt',
             factor: 2,
             msgid: 'test1',
@@ -71,11 +74,11 @@ describe('I18n end-user library', () => {
             msgstr: [],
             substitutions: []
         };
-        assert.strictEqual(t.pGetDictKeyForDescriptor(descr), t.pGetDictKeyForEntry(entry));
+        assert_1.default.strictEqual(t.pGetDictKeyForDescriptor(descr), t.pGetDictKeyForEntry(entry));
     });
-    it('Selects proper plural form with selectPluralForm and default selector', () => {
-        const t = getController();
-        const descr = {
+    it('Selects proper plural form with selectPluralForm and default selector', function () {
+        var t = (0, utils_1.getController)();
+        var descr = {
             type: '_nt',
             factor: 2,
             msgid: 'test1', // ignored
@@ -85,27 +88,27 @@ describe('I18n end-user library', () => {
             substitutions: []
         };
         // default selector is russian
-        assert.strictEqual(t.pSelectPluralForm(['одна форма', 'две-четыре формы', 'пять и более форм'], descr, /*forceUntranslated = */ false), 'две-четыре формы');
+        assert_1.default.strictEqual(t.pSelectPluralForm(['одна форма', 'две-четыре формы', 'пять и более форм'], descr, /*forceUntranslated = */ false), 'две-четыре формы');
         descr.factor = 1;
-        assert.strictEqual(t.pSelectPluralForm(['одна форма', 'две-четыре формы', 'пять и более форм'], descr, /*forceUntranslated = */ false), 'одна форма');
+        assert_1.default.strictEqual(t.pSelectPluralForm(['одна форма', 'две-четыре формы', 'пять и более форм'], descr, /*forceUntranslated = */ false), 'одна форма');
         descr.factor = 6;
-        assert.strictEqual(t.pSelectPluralForm(['одна форма', 'две-четыре формы', 'пять и более форм'], descr, /*forceUntranslated = */ false), 'пять и более форм');
+        assert_1.default.strictEqual(t.pSelectPluralForm(['одна форма', 'две-четыре формы', 'пять и более форм'], descr, /*forceUntranslated = */ false), 'пять и более форм');
     });
-    it('Selects one and only form with selectPluralForm and default selector, if descriptor is not plural', () => {
-        const t = getController();
-        const descr = {
+    it('Selects one and only form with selectPluralForm and default selector, if descriptor is not plural', function () {
+        var t = (0, utils_1.getController)();
+        var descr = {
             type: '_t',
             msgid: 'test1', // ignored
             msgstr: '',
             substitutions: []
         };
         // default selector is russian
-        assert.strictEqual(t.pSelectPluralForm(['одна форма'], descr, /*forceUntranslated = */ false), 'одна форма');
+        assert_1.default.strictEqual(t.pSelectPluralForm(['одна форма'], descr, /*forceUntranslated = */ false), 'одна форма');
     });
-    it('substituteStrings: proper substitution of single parameter', () => {
-        const t = getController();
-        const str = 'This str has %1 as a value';
-        const descr = {
+    it('substituteStrings: proper substitution of single parameter', function () {
+        var t = (0, utils_1.getController)();
+        var str = 'This str has %1 as a value';
+        var descr = {
             type: '_t',
             msgid: 'test1', // ignored
             msgstr: '',
@@ -113,12 +116,12 @@ describe('I18n end-user library', () => {
                 'param1'
             ]
         };
-        assert.strictEqual(t.pSubstituteStrings(str, descr), 'This str has param1 as a value');
+        assert_1.default.strictEqual(t.pSubstituteStrings(str, descr), 'This str has param1 as a value');
     });
-    it('substituteStrings: proper substitution of single parameter in many places', () => {
-        const t = getController();
-        const str = 'This str has %1 as a value and %1 once again';
-        const descr = {
+    it('substituteStrings: proper substitution of single parameter in many places', function () {
+        var t = (0, utils_1.getController)();
+        var str = 'This str has %1 as a value and %1 once again';
+        var descr = {
             type: '_t',
             msgid: 'test1', // ignored
             msgstr: '',
@@ -126,12 +129,12 @@ describe('I18n end-user library', () => {
                 'param1'
             ]
         };
-        assert.strictEqual(t.pSubstituteStrings(str, descr), 'This str has param1 as a value and param1 once again');
+        assert_1.default.strictEqual(t.pSubstituteStrings(str, descr), 'This str has param1 as a value and param1 once again');
     });
-    it('substituteStrings: proper substitution of multiple different parameters', () => {
-        const t = getController();
-        const str = 'This str has %1, %2 and %3 as values';
-        const descr = {
+    it('substituteStrings: proper substitution of multiple different parameters', function () {
+        var t = (0, utils_1.getController)();
+        var str = 'This str has %1, %2 and %3 as values';
+        var descr = {
             type: '_t',
             msgid: 'test1', // ignored
             msgstr: '',
@@ -141,12 +144,12 @@ describe('I18n end-user library', () => {
                 'param3'
             ]
         };
-        assert.strictEqual(t.pSubstituteStrings(str, descr), 'This str has param1, param2 and param3 as values');
+        assert_1.default.strictEqual(t.pSubstituteStrings(str, descr), 'This str has param1, param2 and param3 as values');
     });
-    it('substituteStrings: proper substitution of multiple different parameters in many places', () => {
-        const t = getController();
-        const str = 'This str has %1, %2 and %3 as values, and also %1 and %3 as more values';
-        const descr = {
+    it('substituteStrings: proper substitution of multiple different parameters in many places', function () {
+        var t = (0, utils_1.getController)();
+        var str = 'This str has %1, %2 and %3 as values, and also %1 and %3 as more values';
+        var descr = {
             type: '_t',
             msgid: 'test1', // ignored
             msgstr: '',
@@ -156,12 +159,12 @@ describe('I18n end-user library', () => {
                 'param3'
             ]
         };
-        assert.strictEqual(t.pSubstituteStrings(str, descr), 'This str has param1, param2 and param3 as values, and also param1 and param3 as more values');
+        assert_1.default.strictEqual(t.pSubstituteStrings(str, descr), 'This str has param1, param2 and param3 as values, and also param1 and param3 as more values');
     });
-    it('substituteStrings: proper substitution of plurality factor for plural forms', () => {
-        const t = getController();
-        const str = 'This str has %% plurality factor';
-        const descr = {
+    it('substituteStrings: proper substitution of plurality factor for plural forms', function () {
+        var t = (0, utils_1.getController)();
+        var str = 'This str has %% plurality factor';
+        var descr = {
             type: '_nt',
             factor: 2,
             msgid: 'test1', // ignored
@@ -170,12 +173,12 @@ describe('I18n end-user library', () => {
             msgstr: [],
             substitutions: []
         };
-        assert.strictEqual(t.pSubstituteStrings(str, descr), 'This str has 2 plurality factor');
+        assert_1.default.strictEqual(t.pSubstituteStrings(str, descr), 'This str has 2 plurality factor');
     });
-    it('substituteStrings: proper substitution of plurality factor in many places for plural forms', () => {
-        const t = getController();
-        const str = 'This str has %% plurality factor and %% factor again';
-        const descr = {
+    it('substituteStrings: proper substitution of plurality factor in many places for plural forms', function () {
+        var t = (0, utils_1.getController)();
+        var str = 'This str has %% plurality factor and %% factor again';
+        var descr = {
             type: '_nt',
             factor: 2,
             msgid: 'test1', // ignored
@@ -184,12 +187,12 @@ describe('I18n end-user library', () => {
             msgstr: [],
             substitutions: []
         };
-        assert.strictEqual(t.pSubstituteStrings(str, descr), 'This str has 2 plurality factor and 2 factor again');
+        assert_1.default.strictEqual(t.pSubstituteStrings(str, descr), 'This str has 2 plurality factor and 2 factor again');
     });
-    it('substituteStrings: proper substitution of parameters and plurality factor for plural forms', () => {
-        const t = getController();
-        const str = 'This str has %% plurality factor and %1, %2 and %3 with %1 and %3 values again';
-        const descr = {
+    it('substituteStrings: proper substitution of parameters and plurality factor for plural forms', function () {
+        var t = (0, utils_1.getController)();
+        var str = 'This str has %% plurality factor and %1, %2 and %3 with %1 and %3 values again';
+        var descr = {
             type: '_nt',
             factor: 2,
             msgid: 'test1', // ignored
@@ -202,12 +205,12 @@ describe('I18n end-user library', () => {
                 'param3'
             ]
         };
-        assert.strictEqual(t.pSubstituteStrings(str, descr), 'This str has 2 plurality factor and param1, param2 and param3 with param1 and param3 values again');
+        assert_1.default.strictEqual(t.pSubstituteStrings(str, descr), 'This str has 2 plurality factor and param1, param2 and param3 with param1 and param3 values again');
     });
-    it('substituteStrings throws error if not all substitutions have been done', () => {
-        const t = getController();
-        const str = 'This str has %1, %2 and %3 as values';
-        const descr = {
+    it('substituteStrings throws error if not all substitutions have been done', function () {
+        var t = (0, utils_1.getController)();
+        var str = 'This str has %1, %2 and %3 as values';
+        var descr = {
             type: '_t',
             msgid: 'test1', // ignored
             msgstr: '',
@@ -216,12 +219,12 @@ describe('I18n end-user library', () => {
                 'param2'
             ]
         };
-        assert.strictEqual(t.pSubstituteStrings(str, descr), 'This str has param1, param2 and %3 as values');
-        assert.strictEqual(getFailedSubstitutions().length, 1);
+        assert_1.default.strictEqual(t.pSubstituteStrings(str, descr), 'This str has param1, param2 and %3 as values');
+        assert_1.default.strictEqual((0, utils_1.getFailedSubstitutions)().length, 1);
     });
-    it('Makes new dictionary from JSON file items', () => {
-        const t = getController();
-        const items = [{
+    it('Makes new dictionary from JSON file items', function () {
+        var t = (0, utils_1.getController)();
+        var items = [{
                 type: 'single',
                 entry: 'test1',
                 translation: 'trans1'
@@ -249,16 +252,17 @@ describe('I18n end-user library', () => {
                 entry: ['test5-1', 'test5-2'],
                 translations: ['', '', 'trans5-3'] // not all translations provided
             }];
-        assert.deepStrictEqual(t.pMakeNewDict(items), {
+        assert_1.default.deepStrictEqual(t.pMakeNewDict(items), {
             'test1': ['trans1'],
             'ctx:ctx1;test2': ['trans2'],
             'plural:test3-2;test3-1': ['trans3-1', 'trans3-2', 'trans3-3'],
             'ctx:ctx2;plural:test4-2;test4-1': ['trans4-1', 'trans4-2', 'trans4-3']
         });
     });
-    it('Makes proper selection function from JSON file', () => {
-        const t = getController();
-        const funcs = {
+    it('Makes proper selection function from JSON file', function () {
+        var _a;
+        var t = (0, utils_1.getController)();
+        var funcs = {
             // key: plurality formula
             'nplurals=1; plural=0;': {
                 0: 0, // key: plurality factor; value: expected # of plural form
@@ -307,17 +311,17 @@ describe('I18n end-user library', () => {
                 120: 4
             }
         };
-        for (const strfun in funcs) {
-            const plural = t.pMakePluralSelectFunction(strfun);
-            for (const factor in funcs[strfun]) {
-                const plVal = plural(parseInt(factor) ?? 0);
-                assert.strictEqual(plVal, funcs[strfun][factor], `Func: ${strfun} (failed on factor ${factor}: expected ${funcs[strfun][factor]} but got ${plVal})`);
+        for (var strfun in funcs) {
+            var plural = t.pMakePluralSelectFunction(strfun);
+            for (var factor in funcs[strfun]) {
+                var plVal = plural((_a = parseInt(factor)) !== null && _a !== void 0 ? _a : 0);
+                assert_1.default.strictEqual(plVal, funcs[strfun][factor], "Func: ".concat(strfun, " (failed on factor ").concat(factor, ": expected ").concat(funcs[strfun][factor], " but got ").concat(plVal, ")"));
             }
         }
     });
-    it('Throws error on incorrect selection function in JSON file', () => {
-        const t = getController();
-        const exceptions = [];
+    it('Throws error on incorrect selection function in JSON file', function () {
+        var t = (0, utils_1.getController)();
+        var exceptions = [];
         try {
             t.pMakePluralSelectFunction('nprals=1; plural=0;'); // typo
         }
@@ -330,63 +334,64 @@ describe('I18n end-user library', () => {
         catch (e) {
             exceptions.push(e);
         }
-        assert.strictEqual(exceptions[0] instanceof Error, true);
-        assert.strictEqual(exceptions[1] instanceof SyntaxError, true);
+        assert_1.default.strictEqual(exceptions[0] instanceof Error, true);
+        assert_1.default.strictEqual(exceptions[1] instanceof SyntaxError, true);
     });
-    it('Integration: properly loads locale file by name (via setLocale)', (done) => {
-        setTranslationGetter((name, onReady) => onReady(name, testLocaleJson));
-        const t = getController();
-        t.setLocale('cs_cz', (name) => {
-            assert.strictEqual(name, 'cs_cz'); // should match with name passed to setLocale
-            assert.strictEqual((t.mDictMeta() ?? { language: '' }).language, 'cs_CZ'); // should match with value in json
-            assert.strictEqual(Object.keys(t.mDictionary()).length, 4); // entries count in test file
-            assert.notStrictEqual(t.mPluralSelect(), undefined);
+    it('Integration: properly loads locale file by name (via setLocale)', function (done) {
+        (0, utils_1.setTranslationGetter)(function (name, onReady) { return onReady(name, fixture_1.testLocaleJson); });
+        var t = (0, utils_1.getController)();
+        t.setLocale('cs_cz', function (name) {
+            var _a;
+            assert_1.default.strictEqual(name, 'cs_cz'); // should match with name passed to setLocale
+            assert_1.default.strictEqual(((_a = t.mDictMeta()) !== null && _a !== void 0 ? _a : { language: '' }).language, 'cs_CZ'); // should match with value in json
+            assert_1.default.strictEqual(Object.keys(t.mDictionary()).length, 4); // entries count in test file
+            assert_1.default.notStrictEqual(t.mPluralSelect(), undefined);
             done();
-        }, (err) => {
-            assert.strictEqual(err, undefined);
+        }, function (err) {
+            assert_1.default.strictEqual(err, undefined);
             done();
         });
     });
-    it('Integration: properly gets string from loaded dictionary with _t', (done) => {
-        setTranslationGetter((name, onReady) => onReady(name, testLocaleJson));
-        const t = getController();
-        t.setLocale('cs_cz', (_name) => {
-            const descr = {
+    it('Integration: properly gets string from loaded dictionary with _t', function (done) {
+        (0, utils_1.setTranslationGetter)(function (name, onReady) { return onReady(name, fixture_1.testLocaleJson); });
+        var t = (0, utils_1.getController)();
+        t.setLocale('cs_cz', function (_name) {
+            var descr = {
                 type: '_t',
                 msgid: '"%1" не подключает по вашему адресу.',
                 msgstr: '',
                 substitutions: ['Provider']
             };
-            assert.strictEqual(t.getString(descr), '"Provider" neumožňuje připojení na Vaší adrese.');
+            assert_1.default.strictEqual(t.getString(descr), '"Provider" neumožňuje připojení na Vaší adrese.');
             done();
-        }, (err) => {
-            assert.strictEqual(err, undefined);
+        }, function (err) {
+            assert_1.default.strictEqual(err, undefined);
             done();
         });
     });
-    it('Integration: properly gets string from loaded dictionary with _pt', (done) => {
-        setTranslationGetter((name, onReady) => onReady(name, testLocaleJson));
-        const t = getController();
-        t.setLocale('cs_cz', (_name) => {
-            const descr = {
+    it('Integration: properly gets string from loaded dictionary with _pt', function (done) {
+        (0, utils_1.setTranslationGetter)(function (name, onReady) { return onReady(name, fixture_1.testLocaleJson); });
+        var t = (0, utils_1.getController)();
+        t.setLocale('cs_cz', function (_name) {
+            var descr = {
                 type: '_pt',
                 msgid: '%1&nbsp;км',
                 msgctxt: 'километры',
                 msgstr: '',
                 substitutions: ['23']
             };
-            assert.strictEqual(t.getString(descr), '23&nbsp;km');
+            assert_1.default.strictEqual(t.getString(descr), '23&nbsp;km');
             done();
-        }, (err) => {
-            assert.strictEqual(err, undefined);
+        }, function (err) {
+            assert_1.default.strictEqual(err, undefined);
             done();
         });
     });
-    it('Integration: properly gets string from loaded dictionary with _nt', (done) => {
-        setTranslationGetter((name, onReady) => onReady(name, testLocaleJson));
-        const t = getController();
-        t.setLocale('cs_cz', (_name) => {
-            const descr = {
+    it('Integration: properly gets string from loaded dictionary with _nt', function (done) {
+        (0, utils_1.setTranslationGetter)(function (name, onReady) { return onReady(name, fixture_1.testLocaleJson); });
+        var t = (0, utils_1.getController)();
+        t.setLocale('cs_cz', function (_name) {
+            var descr = {
                 type: '_nt',
                 factor: 0,
                 msgid: '%% ТВ-канал',
@@ -396,22 +401,22 @@ describe('I18n end-user library', () => {
                 substitutions: []
             };
             descr.factor = 1;
-            assert.strictEqual(t.getString(descr), '1 TV kanál');
+            assert_1.default.strictEqual(t.getString(descr), '1 TV kanál');
             descr.factor = 3;
-            assert.strictEqual(t.getString(descr), '3 TV kanály');
+            assert_1.default.strictEqual(t.getString(descr), '3 TV kanály');
             descr.factor = 8;
-            assert.strictEqual(t.getString(descr), '8 TV kanálů');
+            assert_1.default.strictEqual(t.getString(descr), '8 TV kanálů');
             done();
-        }, (err) => {
-            assert.strictEqual(err, undefined);
+        }, function (err) {
+            assert_1.default.strictEqual(err, undefined);
             done();
         });
     });
-    it('Integration: properly gets string from loaded dictionary with _npt', (done) => {
-        setTranslationGetter((name, onReady) => onReady(name, testLocaleJson));
-        const t = getController();
-        t.setLocale('cs_cz', (_name) => {
-            const descr = {
+    it('Integration: properly gets string from loaded dictionary with _npt', function (done) {
+        (0, utils_1.setTranslationGetter)(function (name, onReady) { return onReady(name, fixture_1.testLocaleJson); });
+        var t = (0, utils_1.getController)();
+        t.setLocale('cs_cz', function (_name) {
+            var descr = {
                 type: '_npt',
                 factor: 0,
                 msgid: '%% место',
@@ -422,41 +427,41 @@ describe('I18n end-user library', () => {
                 substitutions: []
             };
             descr.factor = 1;
-            assert.strictEqual(t.getString(descr), '1 místo');
+            assert_1.default.strictEqual(t.getString(descr), '1 místo');
             descr.factor = 3;
-            assert.strictEqual(t.getString(descr), '3 místa');
+            assert_1.default.strictEqual(t.getString(descr), '3 místa');
             descr.factor = 8;
-            assert.strictEqual(t.getString(descr), '8 míst');
+            assert_1.default.strictEqual(t.getString(descr), '8 míst');
             done();
-        }, (err) => {
-            assert.strictEqual(err, undefined);
+        }, function (err) {
+            assert_1.default.strictEqual(err, undefined);
             done();
         });
     });
-    it('Integration: properly gets fallback string when no dictionary loaded with _t', () => {
-        const t = getController();
-        const descr = {
+    it('Integration: properly gets fallback string when no dictionary loaded with _t', function () {
+        var t = (0, utils_1.getController)();
+        var descr = {
             type: '_t',
             msgid: '"%1" не подключает по вашему адресу.',
             msgstr: '',
             substitutions: ['Provider']
         };
-        assert.strictEqual(t.getString(descr), '"Provider" не подключает по вашему адресу.');
+        assert_1.default.strictEqual(t.getString(descr), '"Provider" не подключает по вашему адресу.');
     });
-    it('Integration: properly gets fallback string when no dictionary loaded with _pt', () => {
-        const t = getController();
-        const descr = {
+    it('Integration: properly gets fallback string when no dictionary loaded with _pt', function () {
+        var t = (0, utils_1.getController)();
+        var descr = {
             type: '_pt',
             msgid: '%1&nbsp;км',
             msgctxt: 'километры',
             msgstr: '',
             substitutions: ['23']
         };
-        assert.strictEqual(t.getString(descr), '23&nbsp;км');
+        assert_1.default.strictEqual(t.getString(descr), '23&nbsp;км');
     });
-    it('Integration: properly gets fallback string when no dictionary loaded with _nt', () => {
-        const t = getController();
-        const descr = {
+    it('Integration: properly gets fallback string when no dictionary loaded with _nt', function () {
+        var t = (0, utils_1.getController)();
+        var descr = {
             type: '_nt',
             factor: 0,
             msgid: '%% ТВ-канал',
@@ -466,15 +471,15 @@ describe('I18n end-user library', () => {
             substitutions: []
         };
         descr.factor = 1;
-        assert.strictEqual(t.getString(descr), '1 ТВ-канал');
+        assert_1.default.strictEqual(t.getString(descr), '1 ТВ-канал');
         descr.factor = 3;
-        assert.strictEqual(t.getString(descr), '3 ТВ-канала');
+        assert_1.default.strictEqual(t.getString(descr), '3 ТВ-канала');
         descr.factor = 8;
-        assert.strictEqual(t.getString(descr), '8 ТВ-каналов');
+        assert_1.default.strictEqual(t.getString(descr), '8 ТВ-каналов');
     });
-    it('Integration: properly gets fallback string when no dictionary loaded with _npt', () => {
-        const t = getController();
-        const descr = {
+    it('Integration: properly gets fallback string when no dictionary loaded with _npt', function () {
+        var t = (0, utils_1.getController)();
+        var descr = {
             type: '_npt',
             factor: 0,
             msgid: '%% место',
@@ -485,52 +490,52 @@ describe('I18n end-user library', () => {
             substitutions: []
         };
         descr.factor = 1;
-        assert.strictEqual(t.getString(descr), '1 место');
+        assert_1.default.strictEqual(t.getString(descr), '1 место');
         descr.factor = 3;
-        assert.strictEqual(t.getString(descr), '3 места');
+        assert_1.default.strictEqual(t.getString(descr), '3 места');
         descr.factor = 8;
-        assert.strictEqual(t.getString(descr), '8 мест');
+        assert_1.default.strictEqual(t.getString(descr), '8 мест');
     });
-    it('Integration: properly gets forced untranslated string from loaded dictionary with _t', (done) => {
-        setTranslationGetter((name, onReady) => onReady(name, testLocaleJson));
-        const t = getController();
-        t.setLocale('cs_cz', (_name) => {
-            const descr = {
+    it('Integration: properly gets forced untranslated string from loaded dictionary with _t', function (done) {
+        (0, utils_1.setTranslationGetter)(function (name, onReady) { return onReady(name, fixture_1.testLocaleJson); });
+        var t = (0, utils_1.getController)();
+        t.setLocale('cs_cz', function (_name) {
+            var descr = {
                 type: '_t',
                 msgid: '"%1" не подключает по вашему адресу.',
                 msgstr: '',
                 substitutions: ['Provider']
             };
-            assert.strictEqual(t.getString(descr, true), '"Provider" не подключает по вашему адресу.');
+            assert_1.default.strictEqual(t.getString(descr, true), '"Provider" не подключает по вашему адресу.');
             done();
-        }, (err) => {
-            assert.strictEqual(err, undefined);
+        }, function (err) {
+            assert_1.default.strictEqual(err, undefined);
             done();
         });
     });
-    it('Integration: properly gets forced untranslated string from loaded dictionary with _pt', (done) => {
-        setTranslationGetter((name, onReady) => onReady(name, testLocaleJson));
-        const t = getController();
-        t.setLocale('cs_cz', (_name) => {
-            const descr = {
+    it('Integration: properly gets forced untranslated string from loaded dictionary with _pt', function (done) {
+        (0, utils_1.setTranslationGetter)(function (name, onReady) { return onReady(name, fixture_1.testLocaleJson); });
+        var t = (0, utils_1.getController)();
+        t.setLocale('cs_cz', function (_name) {
+            var descr = {
                 type: '_pt',
                 msgid: '%1&nbsp;км',
                 msgctxt: 'километры',
                 msgstr: '',
                 substitutions: ['23']
             };
-            assert.strictEqual(t.getString(descr, true), '23&nbsp;км');
+            assert_1.default.strictEqual(t.getString(descr, true), '23&nbsp;км');
             done();
-        }, (err) => {
-            assert.strictEqual(err, undefined);
+        }, function (err) {
+            assert_1.default.strictEqual(err, undefined);
             done();
         });
     });
-    it('Integration: properly gets forced untranslated string from loaded dictionary with _nt', (done) => {
-        setTranslationGetter((name, onReady) => onReady(name, testLocaleJson));
-        const t = getController();
-        t.setLocale('cs_cz', (_name) => {
-            const descr = {
+    it('Integration: properly gets forced untranslated string from loaded dictionary with _nt', function (done) {
+        (0, utils_1.setTranslationGetter)(function (name, onReady) { return onReady(name, fixture_1.testLocaleJson); });
+        var t = (0, utils_1.getController)();
+        t.setLocale('cs_cz', function (_name) {
+            var descr = {
                 type: '_nt',
                 factor: 0,
                 msgid: '%% ТВ-канал',
@@ -540,22 +545,22 @@ describe('I18n end-user library', () => {
                 substitutions: []
             };
             descr.factor = 1;
-            assert.strictEqual(t.getString(descr, true), '1 ТВ-канал');
+            assert_1.default.strictEqual(t.getString(descr, true), '1 ТВ-канал');
             descr.factor = 3;
-            assert.strictEqual(t.getString(descr, true), '3 ТВ-канала');
+            assert_1.default.strictEqual(t.getString(descr, true), '3 ТВ-канала');
             descr.factor = 8;
-            assert.strictEqual(t.getString(descr, true), '8 ТВ-каналов');
+            assert_1.default.strictEqual(t.getString(descr, true), '8 ТВ-каналов');
             done();
-        }, (err) => {
-            assert.strictEqual(err, undefined);
+        }, function (err) {
+            assert_1.default.strictEqual(err, undefined);
             done();
         });
     });
-    it('Integration: properly gets forced untranslated string from loaded dictionary with _npt', (done) => {
-        setTranslationGetter((name, onReady) => onReady(name, testLocaleJson));
-        const t = getController();
-        t.setLocale('cs_cz', (_name) => {
-            const descr = {
+    it('Integration: properly gets forced untranslated string from loaded dictionary with _npt', function (done) {
+        (0, utils_1.setTranslationGetter)(function (name, onReady) { return onReady(name, fixture_1.testLocaleJson); });
+        var t = (0, utils_1.getController)();
+        t.setLocale('cs_cz', function (_name) {
+            var descr = {
                 type: '_npt',
                 factor: 0,
                 msgid: '%% место',
@@ -566,21 +571,21 @@ describe('I18n end-user library', () => {
                 substitutions: []
             };
             descr.factor = 1;
-            assert.strictEqual(t.getString(descr, true), '1 место');
+            assert_1.default.strictEqual(t.getString(descr, true), '1 место');
             descr.factor = 3;
-            assert.strictEqual(t.getString(descr, true), '3 места');
+            assert_1.default.strictEqual(t.getString(descr, true), '3 места');
             descr.factor = 8;
-            assert.strictEqual(t.getString(descr, true), '8 мест');
+            assert_1.default.strictEqual(t.getString(descr, true), '8 мест');
             done();
-        }, (err) => {
-            assert.strictEqual(err, undefined);
+        }, function (err) {
+            assert_1.default.strictEqual(err, undefined);
             done();
         });
     });
-    it('substituteStrings throws error if there is no plural form for current factor in current locale', () => {
-        const t = getController();
-        const str = '';
-        const descr = {
+    it('substituteStrings throws error if there is no plural form for current factor in current locale', function () {
+        var t = (0, utils_1.getController)();
+        var str = '';
+        var descr = {
             type: '_nt',
             factor: 2,
             msgid: 'test1', // ignored
@@ -589,8 +594,8 @@ describe('I18n end-user library', () => {
             msgstr: [],
             substitutions: ['param1', 'param2'],
         };
-        assert.strictEqual(t.pSubstituteStrings(str, descr), 'test1');
-        assert.strictEqual(getFailedSubstitutions().length, 1);
+        assert_1.default.strictEqual(t.pSubstituteStrings(str, descr), 'test1');
+        assert_1.default.strictEqual((0, utils_1.getFailedSubstitutions)().length, 1);
     });
 });
 //# sourceMappingURL=controller.spec.js.map
